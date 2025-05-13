@@ -16,6 +16,7 @@ namespace RightHelp___Aida.Controls
         private TaskCompletionSource<bool> animationFinishedTCS;
         private double DotOffsetX = -3;
         private double DotOffsetY = 15;
+        private bool isAnimating;
 
         public VoiceCircle()
         {
@@ -27,10 +28,6 @@ namespace RightHelp___Aida.Controls
         {
             PositionDotAtCenter();
             PositionInnerGuideEllipse();
-            if (OrbitPath == null)
-                MessageBox.Show("OrbitPath está nulo!");
-            else
-                MessageBox.Show("OrbitPath está carregado corretamente!");
         }
 
         private void PositionDotAtCenter()
@@ -72,62 +69,85 @@ namespace RightHelp___Aida.Controls
             // 1. Bouncing (quicar) 2 vezes
             await PlayBounceAnimationAsync();
 
-            // 2. Volta completa ao redor da elipse
-            await PlayCircleAnimation();
-
-            // 3. Espera terminar a volta
-            await animationFinishedTCS.Task;
-
             // 4. Só agora entrega a resposta da IA
             await deliverResponse();
         }
 
         private async Task PlayBounceAnimationAsync()
         {
+            if (isAnimating) // Verifica se já existe uma animação em andamento
+            {
+                return; // Se já estiver animando, não faz nada
+            }
+
+            isAnimating = true;
+
             var tcs = new TaskCompletionSource<bool>();
 
-            double offSet = 30;
+            // Parâmetros ajustáveis
+            double maxBounceDistance = -42;  // Distância máxima do salto (ajustável)
+            double returnDistance = 0;      // Distância de retorno (ajustável)
 
-            double ellipseRadius = VoiceEllipse.ActualHeight / 2 - offSet;
+            double animationDurationFall = 300;  // Tempo de queda (ajustável)
+            double animationDurationBounce = 250;  // Tempo de cada quique (ajustável)
+            double animationDurationReturn = 500;  // Tempo para retornar à posição original (ajustável)
 
+            // Posição inicial do Dot
+            double startPos = 0;
+
+            // Define a animação para o primeiro salto (cair)
             var fallAnimation = new DoubleAnimation
             {
-                From = 0,
-                To = ellipseRadius,
-                Duration = TimeSpan.FromMilliseconds(200),
+                From = startPos,
+                To = startPos - maxBounceDistance,  // Cai para baixo
+                Duration = TimeSpan.FromMilliseconds(animationDurationFall),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
 
-            fallAnimation.Completed += (s1, e1) =>
+            fallAnimation.Completed += async (s1, e1) =>
             {
                 var bounce1 = new DoubleAnimation
                 {
-                    From = ellipseRadius,
-                    To = ellipseRadius - 20,
-                    Duration = TimeSpan.FromMilliseconds(150),
+                    From = startPos - maxBounceDistance,  // Começa da posição do salto
+                    To = startPos - maxBounceDistance*0.33,  // Menor salto
+                    Duration = TimeSpan.FromMilliseconds(animationDurationBounce),
                     AutoReverse = true,
                     EasingFunction = new SineEase { EasingMode = EasingMode.EaseOut }
                 };
 
-                bounce1.Completed += (s2, e2) =>
+                bounce1.Completed += async (s2, e2) =>
                 {
                     var bounce2 = new DoubleAnimation
                     {
-                        From = ellipseRadius,
-                        To = ellipseRadius - 10,
-                        Duration = TimeSpan.FromMilliseconds(120),
+                        From = startPos - maxBounceDistance,
+                        To = startPos - (maxBounceDistance*0.66),  // Menor ainda
+                        Duration = TimeSpan.FromMilliseconds(animationDurationBounce),
                         AutoReverse = true,
                         EasingFunction = new SineEase { EasingMode = EasingMode.EaseOut }
                     };
 
-                    bounce2.Completed += (s3, e3) =>
+                    bounce2.Completed += async (s3, e3) =>
                     {
-                        // Atualiza a posição real do Dot
-                        double finalTop = Canvas.GetTop(Dot) + DotTransform.Y;
-                        Canvas.SetTop(Dot, finalTop);
-                        DotTransform.Y = 0;
+                        // O terceiro salto é para voltar ao centro
+                        var returnAnimation = new DoubleAnimation
+                        {
+                            From = startPos - maxBounceDistance,
+                            To = startPos, // Retorna à posição original
+                            Duration = TimeSpan.FromMilliseconds(animationDurationReturn*3),
+                            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                        };
 
-                        tcs.SetResult(true);
+                        returnAnimation.Completed += (s4, e4) =>
+                        {
+                            // Atualiza a posição real do Dot
+                            double finalTop = Canvas.GetTop(Dot) + DotTransform.Y;
+                            Canvas.SetTop(Dot, finalTop);
+                            DotTransform.Y = 0;
+
+                            isAnimating = false;
+                        };
+
+                        DotTransform.BeginAnimation(TranslateTransform.YProperty, returnAnimation);
                     };
 
                     DotTransform.BeginAnimation(TranslateTransform.YProperty, bounce2);
@@ -140,43 +160,6 @@ namespace RightHelp___Aida.Controls
             DotTransform.BeginAnimation(TranslateTransform.YProperty, fallAnimation);
 
             await tcs.Task;
-        }
-
-
-        private async Task PlayCircleAnimation()
-        {
-            PathGeometry pathGeometry = OrbitPath.Data.GetFlattenedPathGeometry();
-
-            DoubleAnimationUsingPath pathAnimationX = new DoubleAnimationUsingPath
-            {
-                PathGeometry = pathGeometry, // A geometria do caminho
-                Duration = TimeSpan.FromSeconds(1.5), // Duração da animação
-                Source = PathAnimationSource.X // Animando a posição X
-            };
-
-            DoubleAnimationUsingPath pathAnimationY = new DoubleAnimationUsingPath
-            {
-                PathGeometry = pathGeometry, // A geometria do caminho
-                Duration = TimeSpan.FromSeconds(1.5), // Duração da animação
-                Source = PathAnimationSource.Y // Animando a posição Y
-            };
-
-            // Cria o TranslateTransform que moverá o Dot
-            TranslateTransform translateTransform = new TranslateTransform();
-            Dot.RenderTransform = translateTransform;
-
-            Storyboard storyboard = new Storyboard();
-
-            storyboard.Children.Add(pathAnimationY);
-            storyboard.Children.Add(pathAnimationX);
-
-            Storyboard.SetTarget(pathAnimationX, translateTransform);
-            Storyboard.SetTarget(pathAnimationY, translateTransform);
-
-            Storyboard.SetTargetProperty(pathAnimationX, new PropertyPath(TranslateTransform.XProperty));
-            Storyboard.SetTargetProperty(pathAnimationY, new PropertyPath(TranslateTransform.YProperty));
-
-            storyboard.Begin();
         }
 
         private void PositionInnerGuideEllipse()
