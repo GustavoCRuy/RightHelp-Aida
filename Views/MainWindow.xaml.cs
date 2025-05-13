@@ -24,13 +24,14 @@ namespace RightHelp___Aida.Views
         }
         private async void TestAnimation_Click(object sender, RoutedEventArgs e)
         {
-            await VoiceCircleControl.RunDotAndRespondAsync(async () =>
+            await Dispatcher.InvokeAsync(async () =>
             {
-                // Simula tempo de "resposta" da IA
-                await Task.Delay(1000);
-
-                MessageBox.Show("Resposta entregue!");
-            });
+                await VoiceCircleControl.RunDotAndRespondAsync(async () =>
+                {
+                    await Task.Delay(1000);
+                    MessageBox.Show("Resposta entregue!");
+                });
+            }, DispatcherPriority.Loaded);
         }
 
     }

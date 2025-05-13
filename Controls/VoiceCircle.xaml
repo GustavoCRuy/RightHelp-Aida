@@ -31,13 +31,21 @@
 
         <!-- Caminho invisível para a animação -->
         <Canvas IsHitTestVisible="False">
+            <Ellipse x:Name="InnerGuideEllipse"
+                     Width="120" Height="120"
+                     Stroke="Black"
+                     StrokeThickness="1"
+                     Visibility="Collapsed"
+                     IsHitTestVisible="False"/>
             <!-- Linha preta para visualização da trajetória do ponto -->
-            <Path x:Name="OrbitPath" Stroke="Transparent" Fill="Transparent">
+            <Path x:Name="OrbitPath" Visibility="Collapsed">
                 <Path.Data>
                     <PathGeometry>
-                        <PathFigure StartPoint="75, 0">
-                            <ArcSegment Point="75, 150" Size="75, 75" SweepDirection="Clockwise" IsLargeArc="True" />
-                            <ArcSegment Point="75, 0" Size="75, 75" SweepDirection="Clockwise" IsLargeArc="True" />
+                        <PathFigure StartPoint="75,0" IsClosed="True">
+                            <ArcSegment Point="75,150" Size="75,75"
+                            SweepDirection="Clockwise" IsLargeArc="True"/>
+                            <ArcSegment Point="75,0" Size="75,75"
+                            SweepDirection="Clockwise" IsLargeArc="True"/>
                         </PathFigure>
                     </PathGeometry>
                 </Path.Data>
