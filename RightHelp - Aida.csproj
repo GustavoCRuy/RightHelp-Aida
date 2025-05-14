@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenAI" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\Background 4k.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

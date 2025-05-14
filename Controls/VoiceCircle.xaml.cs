@@ -86,8 +86,6 @@ namespace RightHelp___Aida.Controls
 
             // Parâmetros ajustáveis
             double maxBounceDistance = -42;  // Distância máxima do salto (ajustável)
-            double returnDistance = 0;      // Distância de retorno (ajustável)
-
             double animationDurationFall = 300;  // Tempo de queda (ajustável)
             double animationDurationBounce = 250;  // Tempo de cada quique (ajustável)
             double animationDurationReturn = 500;  // Tempo para retornar à posição original (ajustável)
@@ -136,6 +134,8 @@ namespace RightHelp___Aida.Controls
                             Duration = TimeSpan.FromMilliseconds(animationDurationReturn*3),
                             EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
                         };
+
+                        await Task.Delay(750);
 
                         returnAnimation.Completed += (s4, e4) =>
                         {

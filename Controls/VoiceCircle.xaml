@@ -3,15 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:conv="clr-namespace:RightHelp___Aida.Converters"
              xmlns:local="clr-namespace:RightHelp___Aida.Controls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <conv:HalfConverter x:Key="HalfConverter"/>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
     <Grid>
         <!-- Círculo visual -->
@@ -34,7 +28,7 @@
         <Canvas IsHitTestVisible="False">
             <Ellipse x:Name="InnerGuideEllipse"
                      Width="120" Height="120"
-                     Stroke="Black"
+                     Stroke="LightBlue"
                      StrokeThickness="1"
                      Visibility="Collapsed"
                      IsHitTestVisible="False"
