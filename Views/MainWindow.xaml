@@ -18,12 +18,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Botão de teste e Menu fixos -->
-        <Button Content="Testar Animação"
-                Width="150" Height="40"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,300,0,0"
-                Click="TestAnimation_Click"/>
-
         <Button Content="Enviar"
                 Width="150" Height="40"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,250,0,0"

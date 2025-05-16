@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using OpenAI;
 using OpenAI.Chat;
+using RightHelp___Aida.Services.Constants;
 
-namespace RightHelp___Aida.Services
+namespace RightHelp___Aida.Services.AiCore
 {
     internal class OpenAIClass
     {
@@ -20,7 +21,7 @@ namespace RightHelp___Aida.Services
             public ChatStream(string model)
             {
                 _modelName = model;
-                _client = new ChatClient(_modelName, Constants.openAIKey);
+                _client = new ChatClient(_modelName, Constants.Constants.openAIKey);
 
                 if (_client == null)
                 {

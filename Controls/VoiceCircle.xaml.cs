@@ -59,20 +59,6 @@ namespace RightHelp___Aida.Controls
             VoiceCircleScale.BeginAnimation(ScaleTransform.ScaleYProperty, animationY);
         }
 
-        public async Task RunDotAndRespondAsync(Func<Task> deliverResponse)
-        {
-            if (!IsLoaded)
-            {
-                await this.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
-            }
-
-            // 1. Bouncing (quicar) 2 vezes
-            await PlayBounceAnimationAsync();
-
-            // 4. Só agora entrega a resposta da IA
-            await deliverResponse();
-        }
-
         private async Task PlayBounceAnimationAsync()
         {
             if (isAnimating) // Verifica se já existe uma animação em andamento
@@ -185,6 +171,32 @@ namespace RightHelp___Aida.Controls
 
             InnerGuideEllipse.Visibility = Visibility.Visible;
         }
+
+        /// <summary>
+        /// Inicia a animação de pensamento (bouncing dot).
+        /// Apenas um alias de controle externo — a lógica está no PlayBounceAnimationAsync.
+        /// </summary>
+        public async Task StartThinkingAnimation()
+        {
+            await PlayBounceAnimationAsync();
+        }
+
+        /// <summary>
+        /// Finaliza qualquer estado de pensamento (caso precise cancelar ou limpar algo visual).
+        /// </summary>
+        public void StopThinkingAnimation()
+        {
+            // Reseta posição caso esteja interrompendo no meio
+            if (isAnimating)
+            {
+                DotTransform.BeginAnimation(TranslateTransform.YProperty, null); // Para qualquer animação
+                double finalTop = Canvas.GetTop(Dot) + DotTransform.Y;
+                Canvas.SetTop(Dot, finalTop);
+                DotTransform.Y = 0;
+                isAnimating = false;
+            }
+        }
+
 
     }
 }

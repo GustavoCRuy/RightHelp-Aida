@@ -4,8 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using RightHelp___Aida.Controls;
-using RightHelp___Aida.Services;
-using static RightHelp___Aida.Services.OpenAIClass;
+using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 
 
 namespace RightHelp___Aida.Views
@@ -51,27 +50,40 @@ namespace RightHelp___Aida.Views
                     transform.BeginAnimation(TranslateTransform.YProperty, animation);
                 }
 
-                // Scroll para o fim do texto, se desejar
+                // Scroll para o fim do texto
                 InputScrollViewer?.ScrollToEnd();
             }
         }
 
-        private async void TestAnimation_Click(object sender, RoutedEventArgs e)
-        {
-            await Dispatcher.InvokeAsync(async () =>
-            {
-                await VoiceCircleControl.RunDotAndRespondAsync(async () =>
-                {
-                    await System.Threading.Tasks.Task.Delay(1000);
-                });
-            }, DispatcherPriority.Loaded);
-        }
-
         private async void OnSendClick(object sender, RoutedEventArgs e)
         {
+            string userInput = UserInputBox.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                MessageBox.Show("Por favor, digite algo antes de enviar.");
+                return;
+            }
+
+            // Limpa a entrada
             UserInputBox.Text = "";
 
-            var chat = new ChatStream("gpt-4o-mini");
+            // anima o VoiceCircle de início (ex: bounce ou loading)
+            VoiceCircleControl.StartThinkingAnimation();
+
+            var chat = new ChatStream("gpt-4o");
+
+            await chat.StreamResponseAsync(
+                textInput: userInput,
+                context: "Você é a Aida, uma assistente virtual simpática e prestativa.",
+                onUpdate: (partial) =>
+                {
+                    // Aqui você pode mostrar a resposta na interface conforme chega
+                    Console.Write(partial); // ou atualize um TextBlock, etc.
+                });
+
+            // Opcional: parar animação depois que a IA termina
+            VoiceCircleControl.StopThinkingAnimation();
         }
+
     }
 }
