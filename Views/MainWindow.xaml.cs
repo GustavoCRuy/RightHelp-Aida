@@ -64,13 +64,12 @@ namespace RightHelp___Aida.Views
                 return;
             }
 
-            // Limpa a entrada
             UserInputBox.Text = "";
 
-            // anima o VoiceCircle de início (ex: bounce ou loading)
+            // anima o VoiceCircle de início
             await VoiceCircleControl.StartThinkingAnimation();
 
-            var chat = new ChatStream("gpt-4o-mini");
+            var chat = new ChatStream("gpt-4.1-nano");
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
@@ -78,11 +77,13 @@ namespace RightHelp___Aida.Views
 
                 onUpdate: (partial) =>
                 {
-
-                    System.Diagnostics.Debug.WriteLine(partial);
+                    Dispatcher.Invoke(() =>
+                    {
+                        RespostaControl.AppendText(partial);
+                    });
                 });
 
-            // Opcional: parar animação depois que a IA termina
+            // parar animação depois que a IA termina
             VoiceCircleControl.StopThinkingAnimation();
         }
 

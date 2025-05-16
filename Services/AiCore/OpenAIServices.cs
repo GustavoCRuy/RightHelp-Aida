@@ -21,7 +21,15 @@ namespace RightHelp___Aida.Services.AiCore
             public ChatStream(string model)
             {
                 _modelName = model;
-                _client = new ChatClient(_modelName, Constants.Constants.openAIKey);
+                try
+                {
+                    _client = new ChatClient(_modelName, Constants.Constants.openAIKey);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao criar ChatClient: {ex.Message}");
+                }
+
 
                 if (_client == null)
                 {

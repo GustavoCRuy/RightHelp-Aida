@@ -8,6 +8,6 @@ namespace RightHelp___Aida.Services.Constants
 {
     internal class Constants
     {
-        public static string openAIKey = "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";
+        public static string openAIKey = "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";
     }
 }

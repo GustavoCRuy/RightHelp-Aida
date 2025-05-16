@@ -17,7 +17,13 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
+        
+        <controls:RespostaTextBox x:Name="RespostaControl"
+                                 Grid.Row="0"
+                                 Margin="20"
+                                 VerticalAlignment="Stretch"
+                                 HorizontalAlignment="Stretch" />
+        
         <Button Content="Enviar"
                 Width="150" Height="40"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,250,0,0"
