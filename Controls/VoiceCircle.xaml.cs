@@ -91,7 +91,7 @@ namespace RightHelp___Aida.Controls
             double animationDurationReturn = 500;  // Tempo para retornar à posição original (ajustável)
 
             // Posição inicial do Dot
-            double startPos = 0;
+            double startPos = 14;
 
             // Define a animação para o primeiro salto (cair)
             var fallAnimation = new DoubleAnimation

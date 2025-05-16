@@ -12,7 +12,7 @@
         <ImageBrush ImageSource="/Assets/Images/Background 4k.png" Stretch="Fill"/>
     </Window.Background>
 
-    <Grid>
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -21,8 +21,13 @@
         <!-- Botão de teste e Menu fixos -->
         <Button Content="Testar Animação"
                 Width="150" Height="40"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,384,0,0"
+                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,300,0,0"
                 Click="TestAnimation_Click"/>
+
+        <Button Content="Enviar"
+                Width="150" Height="40"
+                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,250,0,0"
+                Click="OnSendClick" />
 
         <controls:MenuButton x:Name="ButtonMenu" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
@@ -45,8 +50,9 @@
                 BorderThickness="1"
                 BorderBrush="Gray"
                 Margin="20">
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          MaxHeight="200">
+            <ScrollViewer x:Name="InputScrollViewer"
+                VerticalScrollBarVisibility="Auto"
+                MaxHeight="200">
                 <TextBox x:Name="UserInputBox"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"

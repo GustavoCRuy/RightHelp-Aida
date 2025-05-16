@@ -23,26 +23,27 @@
                 <DropShadowEffect Color="Blue" BlurRadius="20" ShadowDepth="0"/>
             </Ellipse.Effect>
         </Ellipse>
+        <Ellipse x:Name="InnerGuideEllipse"
+         Width="120" Height="120"
+         Stroke="LightBlue"
+         StrokeThickness="1"
+         Visibility="Collapsed"
+         IsHitTestVisible="False"
+         Opacity="0.5"/>
 
-        <!-- Caminho invisível para a animação -->
-        <Canvas IsHitTestVisible="False">
-            <Ellipse x:Name="InnerGuideEllipse"
-                     Width="120" Height="120"
-                     Stroke="LightBlue"
-                     StrokeThickness="1"
-                     Visibility="Collapsed"
-                     IsHitTestVisible="False"
-                     Opacity="0.5"/>
-
-            <!-- Dot começa no centro da elipse -->
-            <Ellipse x:Name="Dot"
-                     Width="10" Height="10"
-                     Fill="White">
-                <Ellipse.RenderTransform>
-                    <TranslateTransform x:Name="DotTransform"/>
-                </Ellipse.RenderTransform>
-            </Ellipse>
-        </Canvas>
+            
+        <!-- Dot começa no centro da elipse -->
+        <Ellipse x:Name="Dot"
+                    Width="10" Height="10"
+                    Fill="White"
+                    VerticalAlignment="center"
+                    HorizontalAlignment="Center"
+                    >
+            <Ellipse.RenderTransform>
+                <TranslateTransform x:Name="DotTransform" X="-3" Y="14"/>
+            </Ellipse.RenderTransform>
+        </Ellipse>
+       
 
         <!-- Texto composto AI.da -->
         <StackPanel Orientation="Horizontal"

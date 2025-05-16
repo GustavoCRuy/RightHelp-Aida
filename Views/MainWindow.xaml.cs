@@ -1,8 +1,12 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using RightHelp___Aida.Controls;
+using RightHelp___Aida.Services;
+using static RightHelp___Aida.Services.OpenAIClass;
+
 
 namespace RightHelp___Aida.Views
 {
@@ -21,22 +25,34 @@ namespace RightHelp___Aida.Views
             timer.Start();
         }
 
-        private void UserInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void UserInputBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is System.Windows.Controls.TextBox tb)
+            if (sender is TextBox tb)
             {
                 tb.Measure(new Size(tb.ActualWidth, double.PositiveInfinity));
-                var desiredHeight = tb.DesiredSize.Height;
+                double desiredHeight = tb.DesiredSize.Height;
                 double maxHeight = 200;
 
                 tb.Height = Math.Min(desiredHeight, maxHeight);
 
-                // Ajusta o offset vertical do VoiceCircle via RenderTransform
+                // Calcula novo offset
+                double newOffset = tb.Height - 30;
+
+                // Aplica animação suave no Y do TranslateTransform
                 if (VoiceCircleControl.RenderTransform is TranslateTransform transform)
                 {
-                    double offset = Math.Min(desiredHeight, maxHeight) - 30;
-                    transform.Y = -offset;
+                    var animation = new DoubleAnimation
+                    {
+                        To = -newOffset,
+                        Duration = TimeSpan.FromMilliseconds(250),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                    };
+
+                    transform.BeginAnimation(TranslateTransform.YProperty, animation);
                 }
+
+                // Scroll para o fim do texto, se desejar
+                InputScrollViewer?.ScrollToEnd();
             }
         }
 
@@ -47,9 +63,15 @@ namespace RightHelp___Aida.Views
                 await VoiceCircleControl.RunDotAndRespondAsync(async () =>
                 {
                     await System.Threading.Tasks.Task.Delay(1000);
-                    MessageBox.Show("Resposta entregue!");
                 });
             }, DispatcherPriority.Loaded);
+        }
+
+        private async void OnSendClick(object sender, RoutedEventArgs e)
+        {
+            UserInputBox.Text = "";
+
+            var chat = new ChatStream("gpt-4o-mini");
         }
     }
 }
