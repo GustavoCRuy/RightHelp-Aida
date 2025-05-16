@@ -53,7 +53,7 @@ namespace RightHelp___Aida.Services.AiCore
                     };
                     var options = new ChatCompletionOptions
                     {
-                        MaxOutputTokenCount = 40
+                        MaxOutputTokenCount = 500
                     };
 
                     await foreach (var update in _client.CompleteChatStreamingAsync(messages, options))

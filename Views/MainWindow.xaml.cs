@@ -68,17 +68,18 @@ namespace RightHelp___Aida.Views
             UserInputBox.Text = "";
 
             // anima o VoiceCircle de início (ex: bounce ou loading)
-            VoiceCircleControl.StartThinkingAnimation();
+            await VoiceCircleControl.StartThinkingAnimation();
 
-            var chat = new ChatStream("gpt-4o");
+            var chat = new ChatStream("gpt-4o-mini");
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
                 context: "Você é a Aida, uma assistente virtual simpática e prestativa.",
+
                 onUpdate: (partial) =>
                 {
-                    // Aqui você pode mostrar a resposta na interface conforme chega
-                    Console.Write(partial); // ou atualize um TextBlock, etc.
+
+                    System.Diagnostics.Debug.WriteLine(partial);
                 });
 
             // Opcional: parar animação depois que a IA termina
