@@ -11,9 +11,12 @@ namespace RightHelp___Aida.Views
 {
     public partial class MainWindow : Window
     {
+        private bool _sidebarOpen = false;
         public MainWindow()
         {
             InitializeComponent();
+
+            ButtonMenu.MenuClicked += MenuButton_MenuClicked;
 
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += (s, e) =>
@@ -22,6 +25,29 @@ namespace RightHelp___Aida.Views
                 VoiceCircleControl.ReactToVolume(simulatedVolume);
             };
             timer.Start();
+        }
+
+        private void MenuButton_MenuClicked(object sender, EventArgs e)
+        {
+            ToggleSidebar();
+        }
+
+        private void ToggleSidebar()
+        {
+            double width = Sidebar.Width;
+            double from = _sidebarOpen ? 0 : -width;
+            double to = _sidebarOpen ? -width : 0;
+
+            var animation = new DoubleAnimation
+            {
+                From = from,
+                To = to,
+                Duration = TimeSpan.FromMilliseconds(300)
+            };
+
+            SidebarTransform.BeginAnimation(TranslateTransform.XProperty, animation);
+
+            _sidebarOpen = !_sidebarOpen;
         }
 
         private void UserInputBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -54,7 +80,7 @@ namespace RightHelp___Aida.Views
                 InputScrollViewer?.ScrollToEnd();
             }
         }
-        
+
         private async void OnSendClick(object sender, RoutedEventArgs e)
         {
             string userInput = UserInputBox.Text?.Trim();
@@ -66,15 +92,17 @@ namespace RightHelp___Aida.Views
 
             UserInputBox.Text = "";
 
+            // Sempre adiciona espaçamento e marcador antes da resposta
+            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine + "• ");
+
             // anima o VoiceCircle de início
-            //await VoiceCircleControl.StartThinkingAnimation();
+            await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
-                context: "Você é a Aida, uma assistente virtual simpática e prestativa.",
-
+                context: "Você é a Aida, uma assistente virtual mas prestativa.",
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
@@ -82,10 +110,10 @@ namespace RightHelp___Aida.Views
                         RespostaControl.AppendText(partial);
                     });
                 });
+            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine + "\n\n\n ");
 
             // parar animação depois que a IA termina
-            //VoiceCircleControl.StopThinkingAnimation();
+            VoiceCircleControl.StopThinkingAnimation();
         }
-
     }
 }

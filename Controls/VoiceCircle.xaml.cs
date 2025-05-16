@@ -131,6 +131,7 @@ namespace RightHelp___Aida.Controls
                             DotTransform.Y = 0;
 
                             isAnimating = false;
+                            tcs.SetResult(true);
                         };
 
                         DotTransform.BeginAnimation(TranslateTransform.YProperty, returnAnimation);
