@@ -54,7 +54,7 @@ namespace RightHelp___Aida.Views
                 InputScrollViewer?.ScrollToEnd();
             }
         }
-
+        
         private async void OnSendClick(object sender, RoutedEventArgs e)
         {
             string userInput = UserInputBox.Text?.Trim();
@@ -67,7 +67,7 @@ namespace RightHelp___Aida.Views
             UserInputBox.Text = "";
 
             // anima o VoiceCircle de início
-            await VoiceCircleControl.StartThinkingAnimation();
+            //await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
 
@@ -84,7 +84,7 @@ namespace RightHelp___Aida.Views
                 });
 
             // parar animação depois que a IA termina
-            VoiceCircleControl.StopThinkingAnimation();
+            //VoiceCircleControl.StopThinkingAnimation();
         }
 
     }
