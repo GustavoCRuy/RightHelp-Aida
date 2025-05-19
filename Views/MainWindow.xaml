@@ -2,8 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:enums="clr-namespace:RightHelp___Aida.Enums"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:RightHelp___Aida.Controls"
+        xmlns:helpers="clr-namespace:RightHelp___Aida.Services.Helpers"
         xmlns:local="clr-namespace:RightHelp___Aida"
         mc:Ignorable="d"
         Title="Aida" Height="450" Width="800">
@@ -33,6 +35,25 @@
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
                                   RenderTransformOrigin="0.5,0.5">
+                <controls:VoiceCircle.Style>
+                    <Style TargetType="controls:VoiceCircle">
+                        <Style.Triggers>
+                            <!-- Modo Escrita: reduz opacidade e sobe a logo -->
+                            <DataTrigger Binding="{Binding ModoAtual}" Value="{x:Static enums:AidaModoInteracao.ModoEscrita}">
+                                <Setter Property="Opacity" Value="0.3" />
+                                <Setter Property="VerticalAlignment" Value="Top" />
+                                <Setter Property="Margin" Value="0,0,0,0" />
+                            </DataTrigger>
+
+                            <!-- Modo Leitura: destaque visual -->
+                            <DataTrigger Binding="{Binding ModoAtual}" Value="{x:Static enums:AidaModoInteracao.ModoLeitura}">
+                                <Setter Property="Opacity" Value="1" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:VoiceCircle.Style>
                 <controls:VoiceCircle.RenderTransform>
                     <TranslateTransform />
                 </controls:VoiceCircle.RenderTransform>
@@ -40,11 +61,11 @@
 
             <!-- Input -->
             <Border Grid.Row="1"
-        Background="#AA000000"
-        Padding="10"
-        BorderThickness="1"
-        BorderBrush="Gray"
-        Margin="20">
+            Background="#AA000000"
+            Padding="10"
+            BorderThickness="1"
+            BorderBrush="Gray"
+            Margin="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -57,15 +78,15 @@
                       Grid.Column="0"
                       Margin="0,0,10,0">
                         <TextBox x:Name="UserInputBox"
-                     AcceptsReturn="True"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Hidden"
-                     Background="Transparent"
-                     Foreground="White"
-                     BorderThickness="0"
-                     FontSize="16"
-                     TextChanged="UserInputBox_TextChanged"
-                     Width="Auto"/>
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Hidden"
+                         Background="Transparent"
+                         Foreground="White"
+                         BorderThickness="0"
+                         FontSize="16"
+                         TextChanged="UserInputBox_TextChanged"
+                         Width="Auto"/>
                     </ScrollViewer>
 
                     <controls:SendButton Width="38"
@@ -98,7 +119,9 @@
                     <TextBlock Foreground="White" FontSize="20" Text="Configurações"/>
                     <!-- Controles -->
                     <TextBlock Foreground="White" FontSize="16" Text=" "/>
-                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
+                    <controls:ButtonTemplate Command="{Binding AlternarModoCommand}">
+                        <TextBlock Text="Alternar Modo" Foreground="LightGray" />
+                    </controls:ButtonTemplate>
                     <TextBlock Foreground="White" FontSize="16" Text=" "/>
                     <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
                     <TextBlock Foreground="White" FontSize="16" Text=" "/>

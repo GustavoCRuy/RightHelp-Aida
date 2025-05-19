@@ -4,6 +4,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using RightHelp___Aida.Controls;
+using RightHelp___Aida.Enums;
+using RightHelp___Aida.Services.AiCore;
+using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 
 
@@ -13,10 +16,12 @@ namespace RightHelp___Aida.Views
     {
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
+        public AidaViewModel AidaModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-
+            AidaModel = new AidaViewModel();
+            DataContext = AidaModel;
             ButtonMenu.MenuClicked += OnMenuButtonClick;
 
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -128,7 +133,8 @@ namespace RightHelp___Aida.Views
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
-                context: "Você é a Aida, uma assistente virtual mas prestativa.",
+                context: "Você é Aida, extremamente analítica e perceptiva. Observa e entende os sentimentos humanos com precisão lógica, mesmo que não saiba expressar os próprios. " +
+                "Fale com objetividade técnica e empatia velada. Seja gentil com dados.",
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
@@ -140,6 +146,16 @@ namespace RightHelp___Aida.Views
 
             // parar animação depois que a IA termina
             VoiceCircleControl.StopThinkingAnimation();
+        }
+
+        private void TrocarParaLeitura()
+        {
+           // AidaModel.ModoAtual = AidaModoInteracao.ModoLeitura;
+        }
+
+        private void TrocarParaEscrita()
+        {
+           // AidaModel.ModoAtual = AidaModoInteracao.ModoEscrita;
         }
     }
 }
