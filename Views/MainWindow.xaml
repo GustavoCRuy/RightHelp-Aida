@@ -12,74 +12,108 @@
         <ImageBrush ImageSource="/Assets/Images/Background 4k.png" Stretch="Fill"/>
     </Window.Background>
 
-    <Grid Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        
-        <controls:RespostaTextBox x:Name="RespostaControl"
-                                 Grid.Row="0"
-                                 Margin="20"
-                                 VerticalAlignment="Stretch"
-                                 HorizontalAlignment="Stretch" />
+    <!-- GRID PAI -->
+    <Grid x:Name="MainRoot" Background="Transparent">
 
-        <Button Content="OnSendClick"
-                Width="150" Height="40"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,250,0,0"
-                Click="OnSendClick" />
+        <!-- CAMADA 1 - CONTEÚDO -->
+        <Grid x:Name="MainContent" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <controls:MenuButton x:Name="ButtonMenu" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <controls:RespostaTextBox x:Name="RespostaControl"
+                                     Grid.Row="0"
+                                     Margin="20"
+                                     VerticalAlignment="Stretch"
+                                     HorizontalAlignment="Stretch" />
+            <!-- VoiceCircle -->
+            <controls:VoiceCircle x:Name="VoiceCircleControl"
+                                  Grid.Row="0"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  RenderTransformOrigin="0.5,0.5">
+                <controls:VoiceCircle.RenderTransform>
+                    <TranslateTransform />
+                </controls:VoiceCircle.RenderTransform>
+            </controls:VoiceCircle>
 
-        <!-- VoiceCircle no centro da área superior -->
-        <controls:VoiceCircle x:Name="VoiceCircleControl"
-                              Grid.Row="0"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              RenderTransformOrigin="0.5,0.5">
-            <!-- RenderTransform sem nome -->
-            <controls:VoiceCircle.RenderTransform>
-                <TranslateTransform />
-            </controls:VoiceCircle.RenderTransform>
-        </controls:VoiceCircle>
+            <!-- Input -->
+            <Border Grid.Row="1"
+        Background="#AA000000"
+        Padding="10"
+        BorderThickness="1"
+        BorderBrush="Gray"
+        Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-        <!-- Input expansível com Scroll -->
-        <Border Grid.Row="1"
-                Background="#AA000000"
-                Padding="10"
-                BorderThickness="1"
-                BorderBrush="Gray"
-                Margin="20">
-            <ScrollViewer x:Name="InputScrollViewer"
-                VerticalScrollBarVisibility="Auto"
-                MaxHeight="200">
-                <TextBox x:Name="UserInputBox"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Hidden"
-                         Background="Transparent"
-                         Foreground="White"
-                         BorderThickness="0"
-                         FontSize="16"
-                         TextChanged="UserInputBox_TextChanged"/>
-            </ScrollViewer>
-        </Border>
+                    <ScrollViewer x:Name="InputScrollViewer"
+                      VerticalScrollBarVisibility="Auto"
+                      MaxHeight="200"
+                      Grid.Column="0"
+                      Margin="0,0,10,0">
+                        <TextBox x:Name="UserInputBox"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Hidden"
+                     Background="Transparent"
+                     Foreground="White"
+                     BorderThickness="0"
+                     FontSize="16"
+                     TextChanged="UserInputBox_TextChanged"
+                     Width="Auto"/>
+                    </ScrollViewer>
 
-        <Border x:Name="Sidebar"
-                Width="{Binding ActualWidth, ElementName=MainGrid, ConverterParameter=0.15}"
-                Background="#FF222222"
-                HorizontalAlignment="Left"
-                RenderTransformOrigin="0,0"
-                Panel.ZIndex="10">
-            <!-- ZIndex alto para ficar por cima -->
-            <Border.RenderTransform>
-                <TranslateTransform x:Name="SidebarTransform" X="-1000"/>
-            </Border.RenderTransform>
+                    <controls:SendButton Width="38"
+                             Height="40"
+                             VerticalAlignment="Bottom"
+                             Grid.Column="1"
+                             Click="OnSendClick"/>
+                </Grid>
+            </Border>
 
-            <StackPanel Margin="10">
-                <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
-                <!-- Coloque aqui seus controles de configuração -->
-            </StackPanel>
-        </Border>
+
+        </Grid>
+
+        <!-- CAMADA 2 - SIDEBAR + BOTÃO -->
+        <Grid x:Name="SidebarContainer"
+              Width="200"
+              HorizontalAlignment="Left"
+              RenderTransformOrigin="0,0"
+              Panel.ZIndex="10">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="SidebarTransform" X="-150" />
+            </Grid.RenderTransform>
+
+            <!-- Sidebar -->
+            <Border x:Name="Sidebar"
+                    Width="150"
+                    Background="#AA222222"
+                    HorizontalAlignment="Left">
+                <StackPanel Margin="10">
+                    <TextBlock Foreground="White" FontSize="20" Text="Configurações"/>
+                    <!-- Controles -->
+                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
+                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
+                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
+                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
+                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
+                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Botão fixo no lado direito da Sidebar -->
+            <controls:MenuButton x:Name="ButtonMenu"
+                         Width="50"
+                         HorizontalAlignment="Right"
+                         VerticalAlignment="Top"
+                         MenuClicked="OnMenuButtonClick"/>
+        </Grid>
+
+
     </Grid>
 </Window>

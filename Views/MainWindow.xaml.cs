@@ -11,12 +11,13 @@ namespace RightHelp___Aida.Views
 {
     public partial class MainWindow : Window
     {
+        private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
         public MainWindow()
         {
             InitializeComponent();
 
-            ButtonMenu.MenuClicked += MenuButton_MenuClicked;
+            ButtonMenu.MenuClicked += OnMenuButtonClick;
 
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += (s, e) =>
@@ -27,27 +28,52 @@ namespace RightHelp___Aida.Views
             timer.Start();
         }
 
-        private void MenuButton_MenuClicked(object sender, EventArgs e)
+        private void OnMenuButtonClick(object sender, EventArgs e)
         {
-            ToggleSidebar();
+            try
+            {
+                ToggleSidebar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro: {ex.Message}");
+            }
         }
 
         private void ToggleSidebar()
         {
-            double width = Sidebar.Width;
-            double from = _sidebarOpen ? 0 : -width;
-            double to = _sidebarOpen ? -width : 0;
+            if (SidebarContainer == null || SidebarTransform == null || _isAnimatingSideBar)
+                return;
 
+            SidebarContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            SidebarContainer.Arrange(new Rect(SidebarContainer.DesiredSize));
+
+            // Referências para a animação da sidebar
+            double width = SidebarContainer.ActualWidth;
+            double from = SidebarTransform.X;
+            double to = _sidebarOpen ? -150 : 0;
+
+            // Animação de slide da sidebar
             var animation = new DoubleAnimation
             {
                 From = from,
                 To = to,
-                Duration = TimeSpan.FromMilliseconds(300)
+                Duration = TimeSpan.FromMilliseconds(300),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            _isAnimatingSideBar = true;
+
+            animation.Completed += (s, e) =>
+            {
+                _sidebarOpen = !_sidebarOpen;
+                _isAnimatingSideBar = false;
+
+                // Garante que o valor final esteja fixo no transform após animação
+                SidebarTransform.X = to;
             };
 
             SidebarTransform.BeginAnimation(TranslateTransform.XProperty, animation);
-
-            _sidebarOpen = !_sidebarOpen;
         }
 
         private void UserInputBox_TextChanged(object sender, TextChangedEventArgs e)
