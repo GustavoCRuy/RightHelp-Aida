@@ -17,6 +17,7 @@ namespace RightHelp___Aida.Views
     {
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
+        private static string history;
         public AidaViewModel AidaModel { get; set; }
         public MainWindow()
         {
@@ -56,12 +57,14 @@ namespace RightHelp___Aida.Views
             SidebarContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             SidebarContainer.Arrange(new Rect(SidebarContainer.DesiredSize));
 
-            // Referências para a animação da sidebar
+            double extraOffset = 40;
             double width = SidebarContainer.ActualWidth;
             double from = SidebarTransform.X;
-            double to = _sidebarOpen ? -150 : 0;
 
-            // Animação de slide da sidebar
+            double to = _sidebarOpen
+                ? -150                    // Fechar: ir para fora
+                : 0 + extraOffset;       // Abrir: ir para dentro com deslocamento extra
+
             var animation = new DoubleAnimation
             {
                 From = from,
@@ -77,12 +80,12 @@ namespace RightHelp___Aida.Views
                 _sidebarOpen = !_sidebarOpen;
                 _isAnimatingSideBar = false;
 
-                // Garante que o valor final esteja fixo no transform após animação
                 SidebarTransform.X = to;
             };
 
             SidebarTransform.BeginAnimation(TranslateTransform.XProperty, animation);
         }
+
 
         private void UserInputBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -142,15 +145,14 @@ namespace RightHelp___Aida.Views
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
-
+         
             // Marca início da resposta da IA com prefixo
             RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
-                context: "Você é Aida, extremamente analítica e perceptiva. Observa e entende os sentimentos humanos com precisão lógica, mesmo que não saiba expressar os próprios. " +
-                         "Fale com objetividade técnica e empatia velada. Seja gentil com dados.",
-                chatHistory: "",
+                context: AidaPersonalityManager.GetContext(AidaState.CurrentPersona),
+                chatHistory: history,
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>

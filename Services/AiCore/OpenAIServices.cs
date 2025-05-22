@@ -59,6 +59,9 @@ namespace RightHelp___Aida.Services.AiCore
                         ChatMessage.CreateSystemMessage(context + "," + chatHistory),
                         ChatMessage.CreateUserMessage(textInput)
                     };
+
+                    chatHistory = chatHistory + ", " + textInput;
+
                     var options = new ChatCompletionOptions
                     {
                         MaxOutputTokenCount = 500
