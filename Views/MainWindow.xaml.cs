@@ -184,5 +184,21 @@ namespace RightHelp___Aida.Views
         {
            // AidaModel.ModoAtual = AidaModoInteracao.ModoEscrita;
         }
+
+        private void PersonaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PersonaComboBox.SelectedItem is AidaPersonalities.AidaPersona selected)
+            {
+                AidaState.CurrentPersona = selected;
+                // Atualiza o contexto da IA, se necessário
+                // Ex: recarregar o ChatStream com novo contexto ou salvar preferência
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            PersonaComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaPersona));
+            PersonaComboBox.SelectedItem = AidaState.CurrentPersona;
+        }
     }
 }

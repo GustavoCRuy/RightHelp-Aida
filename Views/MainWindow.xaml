@@ -6,9 +6,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:RightHelp___Aida.Controls"
         xmlns:helpers="clr-namespace:RightHelp___Aida.Services.Helpers"
+        xmlns:Styles="clr-namespace RightHelp___Aida.Styles"
         xmlns:local="clr-namespace:RightHelp___Aida"
         mc:Ignorable="d"
-        Title="Aida" Height="450" Width="800">
+        Title="Aida" Height="450" Width="800"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Window.Background>
         <ImageBrush ImageSource="/Assets/Images/Background 4k.png" Stretch="Fill"/>
@@ -25,9 +35,9 @@
             </Grid.RowDefinitions>
 
             <controls:RespostaTextBox x:Name="RespostaControl"
-                         Grid.Row="0"
-                         Margin="20,20,20,20"
-                         Padding="0,30,0,0" />
+                                      Grid.Row="0"
+                                      Margin="20,20,20,20"
+                                      Padding="0,30,0,0" />
             <!-- VoiceCircle -->
             <controls:VoiceCircle x:Name="VoiceCircleControl"
                                   HorizontalAlignment="Center"
@@ -36,14 +46,11 @@
                 <controls:VoiceCircle.Style>
                     <Style TargetType="controls:VoiceCircle">
                         <Style.Triggers>
-                            <!-- Modo Escrita: reduz opacidade e sobe a logo -->
                             <DataTrigger Binding="{Binding ModoAtual}" Value="{x:Static enums:AidaModoInteracao.ModoEscrita}">
                                 <Setter Property="Opacity" Value="0.3" />
                                 <Setter Property="VerticalAlignment" Value="Top" />
                                 <Setter Property="Margin" Value="0,0,0,0" />
                             </DataTrigger>
-
-                            <!-- Modo Leitura: destaque visual -->
                             <DataTrigger Binding="{Binding ModoAtual}" Value="{x:Static enums:AidaModoInteracao.ModoLeitura}">
                                 <Setter Property="Opacity" Value="1" />
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -59,11 +66,11 @@
 
             <!-- Input -->
             <Border Grid.Row="1"
-            Background="#AA000000"
-            Padding="10"
-            BorderThickness="1"
-            BorderBrush="Gray"
-            Margin="20,20,20,20">
+                    Background="#AA000000"
+                    Padding="10"
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    Margin="20,20,20,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -71,33 +78,32 @@
                     </Grid.ColumnDefinitions>
 
                     <ScrollViewer x:Name="InputScrollViewer"
-                      VerticalScrollBarVisibility="Auto"
-                      MaxHeight="600"
-                      Grid.Column="0"
-                      Margin="0,0,10,0">
+                                  VerticalScrollBarVisibility="Auto"
+                                  MaxHeight="600"
+                                  Grid.Column="0"
+                                  Margin="0,0,10,0">
                         <TextBox x:Name="UserInputBox"
-                         GotFocus="UserInputBox_GotFocus"
-                         CaretBrush="White"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Hidden"
-                         Background="Transparent"
-                         Foreground="White"
-                         BorderThickness="0"
-                         FontSize="16"
-                         TextChanged="UserInputBox_TextChanged"
-                         Width="Auto"
-                         PreviewKeyDown="UserInputBox_PreviewKeyDown"/>
+                                 GotFocus="UserInputBox_GotFocus"
+                                 CaretBrush="White"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Hidden"
+                                 Background="Transparent"
+                                 Foreground="White"
+                                 BorderThickness="0"
+                                 FontSize="16"
+                                 TextChanged="UserInputBox_TextChanged"
+                                 Width="Auto"
+                                 PreviewKeyDown="UserInputBox_PreviewKeyDown"/>
                     </ScrollViewer>
 
                     <controls:SendButton Width="38"
-                             Height="40"
-                             VerticalAlignment="Bottom"
-                             Grid.Column="1"
-                             Click="OnSendClick"/>
+                                         Height="40"
+                                         VerticalAlignment="Bottom"
+                                         Grid.Column="1"
+                                         Click="OnSendClick"/>
                 </Grid>
             </Border>
-
 
         </Grid>
 
@@ -123,21 +129,25 @@
                     <controls:ButtonTemplate Command="{Binding AlternarModoCommand}">
                         <TextBlock Text="Alternar Modo" Foreground="LightGray" />
                     </controls:ButtonTemplate>
-                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
-                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
-                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
+                    <ComboBox x:Name="PersonaComboBox"
+                              Style="{StaticResource ModernComboBoxStyle}"
+                              FontSize="14"
+                              Foreground="White"
+                              Background="#222"
+                              Margin="0,5,0,5"
+                              SelectedItem="{Binding SelectedPersona, Mode=TwoWay}"
+                              SelectionChanged="PersonaComboBox_SelectionChanged"/>
                     <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
                 </StackPanel>
             </Border>
 
             <!-- Botão fixo no lado direito da Sidebar -->
             <controls:MenuButton x:Name="ButtonMenu"
-                         Width="50"
-                         HorizontalAlignment="Right"
-                         VerticalAlignment="Top"
-                         MenuClicked="OnMenuButtonClick"/>
+                                 Width="50"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Top"
+                                 MenuClicked="OnMenuButtonClick"/>
         </Grid>
-
 
     </Grid>
 </Window>
