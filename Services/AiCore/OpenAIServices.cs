@@ -44,7 +44,7 @@ namespace RightHelp___Aida.Services.AiCore
             /// <param name="textInput">Entrada do usuário</param>
             /// <param name="context">Contexto anterior ou instruções</param>
             /// <param name="onUpdate">Callback chamado a cada atualização da IA</param>
-            public async Task StreamResponseAsync(string textInput, string context, Action<string> onUpdate)
+            public async Task StreamResponseAsync(string textInput, string context, string chatHistory, Action<string> onUpdate)
             {
                 if (string.IsNullOrEmpty(textInput))
                 {
@@ -56,7 +56,7 @@ namespace RightHelp___Aida.Services.AiCore
                 {
                     var messages = new List<ChatMessage>
                     {
-                        ChatMessage.CreateSystemMessage(context),
+                        ChatMessage.CreateSystemMessage(context + "," + chatHistory),
                         ChatMessage.CreateUserMessage(textInput)
                     };
                     var options = new ChatCompletionOptions

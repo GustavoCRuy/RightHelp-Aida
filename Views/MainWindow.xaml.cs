@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -20,6 +21,8 @@ namespace RightHelp___Aida.Views
         public MainWindow()
         {
             InitializeComponent();
+            UserInputBox.Focus();
+            Keyboard.Focus(UserInputBox);
             AidaModel = new AidaViewModel();
             DataContext = AidaModel;
             ButtonMenu.MenuClicked += OnMenuButtonClick;
@@ -110,9 +113,18 @@ namespace RightHelp___Aida.Views
                 // Scroll para o fim do texto
                 InputScrollViewer?.ScrollToEnd();
             }
-        }
 
-        private async void OnSendClick(object sender, RoutedEventArgs e)
+        }
+        private async void UserInputBox_PreviewKeyDown(object sender, KeyEventArgs e)
+            {
+                if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    e.Handled = true;
+                    await SendUserMessageAsync();
+                }
+            }
+
+        private async Task SendUserMessageAsync()
         {
             string userInput = UserInputBox.Text?.Trim();
             if (string.IsNullOrWhiteSpace(userInput))
@@ -121,20 +133,24 @@ namespace RightHelp___Aida.Views
                 return;
             }
 
+            // Exibe input do usuário com prefixo
+            RespostaControl.AppendText(Environment.NewLine + "Você\n" + userInput + Environment.NewLine);
+
             UserInputBox.Text = "";
 
-            // Sempre adiciona espaçamento e marcador antes da resposta
-            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine + "• ");
-
-            // anima o VoiceCircle de início
+            // Anima o círculo da IA
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
 
+            // Marca início da resposta da IA com prefixo
+            RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
+
             await chat.StreamResponseAsync(
                 textInput: userInput,
                 context: "Você é Aida, extremamente analítica e perceptiva. Observa e entende os sentimentos humanos com precisão lógica, mesmo que não saiba expressar os próprios. " +
-                "Fale com objetividade técnica e empatia velada. Seja gentil com dados.",
+                         "Fale com objetividade técnica e empatia velada. Seja gentil com dados.",
+                chatHistory: "",
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
@@ -142,10 +158,21 @@ namespace RightHelp___Aida.Views
                         RespostaControl.AppendText(partial);
                     });
                 });
-            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine + "\n\n\n ");
 
-            // parar animação depois que a IA termina
+            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine);
+
+            // Finaliza a animação
             VoiceCircleControl.StopThinkingAnimation();
+        }
+
+        private async void OnSendClick(object sender, RoutedEventArgs e)
+        {
+            await SendUserMessageAsync();
+        }
+
+        private void UserInputBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(UserInputBox);
         }
 
         private void TrocarParaLeitura()

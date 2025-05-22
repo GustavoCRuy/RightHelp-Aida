@@ -20,21 +20,19 @@
         <!-- CAMADA 1 - CONTEÚDO -->
         <Grid x:Name="MainContent" Background="Transparent">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" MinHeight="102" />
             </Grid.RowDefinitions>
 
             <controls:RespostaTextBox x:Name="RespostaControl"
-                                     Grid.Row="0"
-                                     Margin="20"
-                                     VerticalAlignment="Stretch"
-                                     HorizontalAlignment="Stretch" />
+                         Grid.Row="0"
+                         Margin="20,20,20,20"
+                         Padding="0,30,0,0" />
             <!-- VoiceCircle -->
             <controls:VoiceCircle x:Name="VoiceCircleControl"
-                                  Grid.Row="0"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
-                                  RenderTransformOrigin="0.5,0.5">
+                                  RenderTransformOrigin="0.5,0.5" Height="150" Width="150">
                 <controls:VoiceCircle.Style>
                     <Style TargetType="controls:VoiceCircle">
                         <Style.Triggers>
@@ -65,7 +63,7 @@
             Padding="10"
             BorderThickness="1"
             BorderBrush="Gray"
-            Margin="20">
+            Margin="20,20,20,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -74,10 +72,12 @@
 
                     <ScrollViewer x:Name="InputScrollViewer"
                       VerticalScrollBarVisibility="Auto"
-                      MaxHeight="200"
+                      MaxHeight="600"
                       Grid.Column="0"
                       Margin="0,0,10,0">
                         <TextBox x:Name="UserInputBox"
+                         GotFocus="UserInputBox_GotFocus"
+                         CaretBrush="White"
                          AcceptsReturn="True"
                          TextWrapping="Wrap"
                          VerticalScrollBarVisibility="Hidden"
@@ -86,7 +86,8 @@
                          BorderThickness="0"
                          FontSize="16"
                          TextChanged="UserInputBox_TextChanged"
-                         Width="Auto"/>
+                         Width="Auto"
+                         PreviewKeyDown="UserInputBox_PreviewKeyDown"/>
                     </ScrollViewer>
 
                     <controls:SendButton Width="38"
