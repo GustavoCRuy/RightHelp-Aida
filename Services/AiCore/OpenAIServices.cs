@@ -64,7 +64,8 @@ namespace RightHelp___Aida.Services.AiCore
 
                     var options = new ChatCompletionOptions
                     {
-                        MaxOutputTokenCount = 500
+                        MaxOutputTokenCount = 500,
+                        Temperature = 0.3f
                     };
 
                     await foreach (var update in _client.CompleteChatStreamingAsync(messages, options))
