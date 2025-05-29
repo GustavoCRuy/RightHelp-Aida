@@ -115,7 +115,7 @@
             <!-- Sidebar -->
             <Border x:Name="Sidebar"
                     Width="190"
-                    Background="#AA222222"
+                    Background="#222222"
                     HorizontalAlignment="Left"
                     Margin="-40,0,0,0">
                 <StackPanel Margin="10">
