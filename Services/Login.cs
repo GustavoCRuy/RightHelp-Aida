@@ -2,17 +2,16 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RightHelp___Aida.Services.Constants;
 
 namespace RightHelp___Aida.Services
 {
     internal class User
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-
-        private readonly string connectionString = "server=localhost;user=root;password=;database=righthelp";
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+        public string? Email { get; set; }
+        public string? FirstName { get; set; }
         public bool IsValid(out string errorMessage)
         {
             Username = Username?.Trim();
@@ -51,7 +50,7 @@ namespace RightHelp___Aida.Services
                 return false;
             }
 
-            errorMessage = null;
+            errorMessage = "";
             return true;
         }
 
@@ -64,10 +63,10 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(connectionString);
+                using var connection = new MySqlConnection(Constants.Constants.connectionString);
                 await connection.OpenAsync();
 
-                var query = "INSERT INTO users (username, password, email, first_name) VALUES (@username, @password, @email, @firstName)";
+                var query = "INSERT INTO usuarios (username, password, email, first_name) VALUES (@username, @password, @email, @firstName)";
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));
@@ -92,10 +91,10 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(connectionString);
+                using var connection = new MySqlConnection(Constants.Constants.connectionString);
                 await connection.OpenAsync();
 
-                var query = "SELECT COUNT(*) FROM users WHERE username = @username AND password = @password";
+                var query = "SELECT COUNT(*) FROM usuarios WHERE username = @username AND password = @password";
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));

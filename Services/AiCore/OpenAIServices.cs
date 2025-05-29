@@ -15,7 +15,7 @@ namespace RightHelp___Aida.Services.AiCore
     {
         internal class ChatStream
         {
-            private readonly string _modelName = "gpt-4o-mini";
+            private readonly string _modelName = "gpt-4o";
             private readonly ChatClient _client;
 
             public ChatStream(string model)

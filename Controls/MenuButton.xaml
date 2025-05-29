@@ -8,13 +8,20 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Button Width="40" Height="40" Click="Button_Click"
-        Background="#AA222222" BorderBrush="Gray" BorderThickness="1">
+                Background="#AA222222" BorderBrush="Gray" BorderThickness="1">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Rectangle Height="4" Width="23" Fill="LightGray" Margin="0,2" RadiusX="2" RadiusY="2"/>
                 <Rectangle Height="4" Width="23" Fill="LightGray" Margin="0,2" RadiusX="2" RadiusY="2"/>
                 <Rectangle Height="4" Width="23" Fill="LightGray" Margin="0,2" RadiusX="2" RadiusY="2"/>
             </StackPanel>
-            
         </Button>
     </Grid>
 </UserControl>

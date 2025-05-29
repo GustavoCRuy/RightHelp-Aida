@@ -19,16 +19,7 @@ namespace RightHelp___Aida.Views
 
             try
             {
-                if (string.IsNullOrWhiteSpace(FirstNameBox.Text) ||
-                    string.IsNullOrWhiteSpace(EmailBox.Text) ||
-                    string.IsNullOrWhiteSpace(UsernameBox.Text) ||
-                    string.IsNullOrWhiteSpace(PasswordBox.Password))
-                {
-                    MessageBox.Show("Preencha todos os campos.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                var login = new User
+                var user = new User
                 {
                     FirstName = FirstNameBox.Text,
                     Email = EmailBox.Text,
@@ -36,7 +27,14 @@ namespace RightHelp___Aida.Views
                     Password = PasswordBox.Password
                 };
 
-                bool registrado = await login.RegisterAsync();
+                string error;
+                if (!user.IsValid(out error))
+                {
+                    MessageBox.Show(error, "Erro de validação", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                bool registrado = await user.RegisterAsync();
                 if (registrado)
                 {
                     MessageBox.Show("Registro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);

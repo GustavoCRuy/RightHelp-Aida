@@ -17,7 +17,10 @@
 
         <Border Grid.Row="1" Width="300" Background="#252525" Padding="30" CornerRadius="10" HorizontalAlignment="Center">
             <StackPanel>
-                <TextBlock Text="Acessar Aida" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 20"/>
+                <TextBlock HorizontalAlignment="Center" Margin="0 0 0 20" FontSize="24" FontWeight="Bold">
+                    <Run Text="Acessar" Foreground="White"/>
+                    <Run Text="Ai.da" Foreground="#0f9bdb"/>
+                </TextBlock>
 
                 <TextBlock Text="Usuário" Foreground="White" Margin="0 0 0 5" Width="230"/>
                 <TextBox x:Name="UsernameBox" Margin="0 0 0 10" Height="35" Width="230" />

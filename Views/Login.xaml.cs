@@ -22,7 +22,10 @@ namespace RightHelp___Aida.Views
             bool autenticado = await login.AuthenticateAsync();
             if (autenticado)
             {
-                MessageBox.Show("Login bem-sucedido!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+
+                Window.GetWindow(this)?.Close();
             }
             else
             {

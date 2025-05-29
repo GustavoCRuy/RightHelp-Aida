@@ -10,10 +10,7 @@
         xmlns:local="clr-namespace:RightHelp___Aida"
         mc:Ignorable="d"
         Title="Aida" Height="450" Width="800"
-        Loaded="Window_Loaded"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        ResizeMode="NoResize">
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -39,8 +36,8 @@
 
             <controls:RespostaTextBox x:Name="RespostaControl"
                                       Grid.Row="0"
-                                      Margin="20,20,20,20"
-                                      Padding="0,30,0,0" />
+                                      Margin="20,14,20,20"
+                                      Padding="0,30,0,0" Loaded="RespostaControl_Loaded" />
             <!-- VoiceCircle -->
             <controls:VoiceCircle x:Name="VoiceCircleControl"
                                   HorizontalAlignment="Center"
@@ -68,12 +65,7 @@
             </controls:VoiceCircle>
 
             <!-- Input -->
-            <Border Grid.Row="1"
-                    Background="#AA000000"
-                    Padding="10"
-                    BorderThickness="1"
-                    BorderBrush="Gray"
-                    Margin="20,20,20,20">
+            <Border Grid.Row="1" Background="#AA000000" Padding="10" BorderThickness="1" BorderBrush="Gray" Margin="20,20,20,20" CornerRadius="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -131,7 +123,7 @@
                     <!-- Controles -->
                     <TextBlock Foreground="White" FontSize="16" Text=" "/>
                     <controls:ButtonTemplate Command="{Binding AlternarModoCommand}">
-                        <TextBlock Text="Alternar Modo" Foreground="LightGray" />
+                        <TextBlock Text="Alternar Modo" Foreground="LightGray" Padding="5" />
                     </controls:ButtonTemplate>
                     <ComboBox x:Name="PersonaComboBox"
                               Style="{StaticResource ModernComboBoxStyle}"
@@ -140,8 +132,10 @@
                               Background="#222"
                               Margin="0,5,0,5"
                               SelectedItem="{Binding SelectedPersona, Mode=TwoWay}"
-                              SelectionChanged="PersonaComboBox_SelectionChanged"/>
-                    <TextBlock Foreground="White" FontSize="16" Text="Configurações"/>
+                              SelectionChanged="PersonaComboBox_SelectionChanged" Width="130"/>
+                    <controls:ButtonTemplate>
+                        <TextBlock Text="Sair" Foreground="LightGray" />
+                    </controls:ButtonTemplate>
                 </StackPanel>
             </Border>
 
@@ -150,7 +144,7 @@
                                  Width="50"
                                  HorizontalAlignment="Right"
                                  VerticalAlignment="Top"
-                                 MenuClicked="OnMenuButtonClick"/>
+                                 MenuClicked="OnMenuButtonClick" Margin="0,0,-15,0"/>
         </Grid>
 
     </Grid>
