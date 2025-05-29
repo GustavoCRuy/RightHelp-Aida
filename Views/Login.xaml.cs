@@ -1,18 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 using RightHelp___Aida.Services;
 
 namespace RightHelp___Aida.Views
@@ -26,7 +13,7 @@ namespace RightHelp___Aida.Views
 
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
-            var login = new Login
+            var login = new User
             {
                 Username = UsernameBox.Text,
                 Password = PasswordBox.Password
@@ -36,7 +23,6 @@ namespace RightHelp___Aida.Views
             if (autenticado)
             {
                 MessageBox.Show("Login bem-sucedido!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-                // Navegar para a próxima página
             }
             else
             {
@@ -46,7 +32,6 @@ namespace RightHelp___Aida.Views
 
         private void RegisterLink_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            // Navegue para a página de registro
             NavigationService?.Navigate(new Registro());
         }
     }

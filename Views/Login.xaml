@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
+      ShowsNavigationUI="False"
       Title="Registro_Login">
 
     <Grid Background="#111111">
@@ -14,18 +15,23 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Width="300" HorizontalAlignment="Center" Background="#1e1e1e">
-            <TextBlock Text="Acessar Aida" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 20"/>
+        <Border Grid.Row="1" Width="300" Background="#252525" Padding="30" CornerRadius="10" HorizontalAlignment="Center">
+            <StackPanel>
+                <TextBlock Text="Acessar Aida" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 0 0 20"/>
 
-            <TextBox x:Name="UsernameBox" Margin="0 0 0 10" Height="35" />
-            <PasswordBox x:Name="PasswordBox" Margin="0 0 0 10" Height="35" />
+                <TextBlock Text="Usuário" Foreground="White" Margin="0 0 0 5" Width="230"/>
+                <TextBox x:Name="UsernameBox" Margin="0 0 0 10" Height="35" Width="230" />
 
-            <Button Content="Entrar" Click="Login_Click" Background="#0078D7" Foreground="White" Height="35" Margin="0 10 0 10" />
+                <TextBlock Text="Senha" Foreground="White" Margin="0 0 0 5" Width="230"/>
+                <PasswordBox x:Name="PasswordBox" Margin="0 0 0 10" Height="35" Width="230" />
 
-            <TextBlock Foreground="Gray" FontSize="12" HorizontalAlignment="Center">
-                <Run Text="Não tem conta? " />
-                <Run Text="Cadastre-se" TextDecorations="Underline" Foreground="LightBlue" Cursor="Hand" MouseDown="RegisterLink_Click"/>
-            </TextBlock>
-        </StackPanel>
+                <Button Content="Entrar" Click="Login_Click" Background="#0078D7" Foreground="White" Height="35" Margin="0 10 0 10" Width="105" />
+
+                <TextBlock Foreground="Gray" FontSize="12" HorizontalAlignment="Center">
+                    <Run Text="Não tem conta? " />
+                    <Run Text="Cadastre-se" TextDecorations="Underline" Foreground="LightBlue" Cursor="Hand" MouseDown="RegisterLink_Click"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>

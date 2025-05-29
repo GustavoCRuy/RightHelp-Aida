@@ -1,17 +1,60 @@
 ﻿using MySqlConnector;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RightHelp___Aida.Services
 {
-    internal class Login
+    internal class User
     {
         public string Username { get; set; }
-        public string Password { get; set; } // Idealmente, armazene como hash
+        public string Password { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
 
         private readonly string connectionString = "server=localhost;user=root;password=;database=righthelp";
+        public bool IsValid(out string errorMessage)
+        {
+            Username = Username?.Trim();
+            Password = Password?.Trim();
+            Email = Email?.Trim();
+            FirstName = FirstName?.Trim();
+
+            if (string.IsNullOrWhiteSpace(Username) || Username.Length < 3)
+            {
+                errorMessage = "O nome de usuário deve ter pelo menos 3 caracteres.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(Password) || Password.Length < 6)
+            {
+                errorMessage = "A senha deve ter pelo menos 6 caracteres.";
+                return false;
+            }
+
+            if (!Regex.IsMatch(Password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$"))
+            {
+                errorMessage = "A senha deve conter letras maiúsculas, minúsculas e números.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(Email) ||
+                !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                errorMessage = "E-mail inválido.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(FirstName) || FirstName.Any(char.IsDigit))
+            {
+                errorMessage = "O nome não deve conter números.";
+                return false;
+            }
+
+            errorMessage = null;
+            return true;
+        }
+
 
         /// <summary>
         /// Registra um novo usuário no banco de dados.

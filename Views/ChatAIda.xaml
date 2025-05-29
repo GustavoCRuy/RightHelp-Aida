@@ -10,7 +10,10 @@
         xmlns:local="clr-namespace:RightHelp___Aida"
         mc:Ignorable="d"
         Title="Aida" Height="450" Width="800"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <ResourceDictionary>
