@@ -5,7 +5,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using RightHelp___Aida.Controls;
-using RightHelp___Aida.Enums;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
@@ -145,6 +144,7 @@ namespace RightHelp___Aida.Views
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
+            var respostaCompleta = "";
          
             // Marca início da resposta da IA com prefixo
             RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
@@ -158,6 +158,7 @@ namespace RightHelp___Aida.Views
                     Dispatcher.Invoke(() =>
                     {
                         RespostaControl.AppendText(partial);
+                        respostaCompleta += partial;    
                     });
                 });
 
@@ -165,6 +166,8 @@ namespace RightHelp___Aida.Views
 
             // Finaliza a animação
             VoiceCircleControl.StopThinkingAnimation();
+            var openAIAudioService = new OpenAIAudioService();
+            await openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
         }
 
         private async void OnSendClick(object sender, RoutedEventArgs e)
@@ -197,10 +200,23 @@ namespace RightHelp___Aida.Views
             }
         }
 
+        private void VoiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VoiceComboBox.SelectedItem is AidaPersonalities.AidaVoice selected)
+            {
+                AidaState.CurrentVoice = selected;
+                // Atualiza a voz da IA.
+                // Ex: recarregar o ChatStream com novo contexto ou salvar preferência
+            }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             PersonaComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaPersona));
             PersonaComboBox.SelectedItem = AidaState.CurrentPersona;
+
+            VoiceComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaVoice));
+            VoiceComboBox.SelectedItem = AidaState.CurrentVoice;
         }
     }
 }

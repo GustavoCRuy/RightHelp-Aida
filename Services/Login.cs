@@ -63,7 +63,7 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(Constants.Constants.connectionString);
+                using var connection = new MySqlConnection(Constants.Const.connectionString);
                 await connection.OpenAsync();
 
                 var query = "INSERT INTO usuarios (username, password, email, first_name) VALUES (@username, @password, @email, @firstName)";
@@ -91,7 +91,7 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(Constants.Constants.connectionString);
+                using var connection = new MySqlConnection(Constants.Const.connectionString);
                 await connection.OpenAsync();
 
                 var query = "SELECT COUNT(*) FROM usuarios WHERE username = @username AND password = @password";

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RightHelp___Aida.Services.Constants;
 
 namespace RightHelp___Aida.Services.Constants
 {
-    internal class Constants
+    internal class Const
     {
         public static string openAIKey = "";
         

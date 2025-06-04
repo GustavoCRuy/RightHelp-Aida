@@ -23,7 +23,7 @@ namespace RightHelp___Aida.Services.AiCore
                 _modelName = model;
                 try
                 {
-                    _client = new ChatClient(_modelName, Constants.Constants.openAIKey);
+                    _client = new ChatClient(_modelName, Const.openAIKey);
                 }
                 catch (Exception ex)
                 {

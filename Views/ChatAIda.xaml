@@ -116,15 +116,18 @@
             <Border x:Name="Sidebar"
                     Width="190"
                     Background="#222222"
+                    BorderThickness="1"
+                    BorderBrush="#FFD3D3D3" 
                     HorizontalAlignment="Left"
                     Margin="-40,0,0,0">
                 <StackPanel Margin="10">
-                    <TextBlock Foreground="White" FontSize="20" Text="Configurações"/>
+                    <TextBlock Foreground="White" FontSize="20" Text="   Configurações"/>
                     <!-- Controles -->
-                    <TextBlock Foreground="White" FontSize="16" Text=" "/>
-                    <controls:ButtonTemplate Command="{Binding AlternarModoCommand}">
+                    <TextBlock Foreground="White" FontSize="16" Text=" " Height="9"/>
+                    <controls:ButtonTemplate Command="{Binding AlternarModoCommand}" Width="130" Height="40">
                         <TextBlock Text="Alternar Modo" Foreground="LightGray" Padding="5" />
                     </controls:ButtonTemplate>
+                    <TextBlock Foreground="White" FontSize="12" Text="      Personalidade" Height="15"/>
                     <ComboBox x:Name="PersonaComboBox"
                               Style="{StaticResource ModernComboBoxStyle}"
                               FontSize="14"
@@ -133,7 +136,16 @@
                               Margin="0,5,0,5"
                               SelectedItem="{Binding SelectedPersona, Mode=TwoWay}"
                               SelectionChanged="PersonaComboBox_SelectionChanged" Width="130"/>
-                    <controls:ButtonTemplate>
+                    <TextBlock Foreground="White" FontSize="12" Text="      Voz" Height="15"/>
+                    <ComboBox x:Name="VoiceComboBox"
+                              Style="{StaticResource ModernComboBoxStyle}"
+                              FontSize="14"
+                              Foreground="White"
+                              Background="#222"
+                              Margin="0,5,0,5"
+                              SelectedItem="{Binding SelectedVoice, Mode=TwoWay}"
+                              SelectionChanged="VoiceComboBox_SelectionChanged" Width="130"/>
+                    <controls:ButtonTemplate Width="131">
                         <TextBlock Text="Sair" Foreground="LightGray" />
                     </controls:ButtonTemplate>
                 </StackPanel>

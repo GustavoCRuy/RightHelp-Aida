@@ -5,6 +5,40 @@ namespace RightHelp___Aida.Services.AiCore
 {
     public class AidaPersonalities
     {
+
+        public enum AidaVoice
+        {
+            Alloy,
+            Nova,
+            Shimmer,
+            Sage,
+            Coral
+        }
+
+        public static class Voices
+        {
+            public static readonly string Alloy = "alloy";
+            public static readonly string Nova = "nova";
+            public static readonly string Shimmer = "shimmer";
+            public static readonly string Sage = "sage";
+            public static readonly string Coral = "coral";
+        }
+
+        public static class AidaVoiceManager
+        {
+            public static readonly Dictionary<AidaPersonalities.AidaVoice, string> VoiceMap = new()
+            {
+                { AidaPersonalities.AidaVoice.Alloy, AidaPersonalities.Voices.Alloy },
+                { AidaPersonalities.AidaVoice.Coral, AidaPersonalities.Voices.Coral },
+                { AidaPersonalities.AidaVoice.Nova, AidaPersonalities.Voices.Nova },
+                { AidaPersonalities.AidaVoice.Sage, AidaPersonalities.Voices.Sage },
+                { AidaPersonalities.AidaVoice.Shimmer, AidaPersonalities.Voices.Shimmer }
+            };
+
+            public static string GetVoiceName(AidaPersonalities.AidaVoice voice) =>
+                VoiceMap.TryGetValue(voice, out var name) ? name : string.Empty;
+        }
+
         public enum AidaPersona
         {
             CéticaCompreensiva,
@@ -74,9 +108,9 @@ namespace RightHelp___Aida.Services.AiCore
         public static string GetContext(AidaPersonalities.AidaPersona persona) =>
             PersonalityMap.TryGetValue(persona, out var context) ? context : string.Empty;
     }
-
     public static class AidaState
     {
         public static AidaPersonalities.AidaPersona CurrentPersona { get; set; } = AidaPersonalities.AidaPersona.CéticaCompreensiva;
+        public static AidaPersonalities.AidaVoice CurrentVoice { get; set; } = AidaPersonalities.AidaVoice.Alloy;
     }
 }
