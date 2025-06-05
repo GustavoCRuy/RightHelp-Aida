@@ -26,14 +26,6 @@ namespace RightHelp___Aida.Views
             AidaModel = new AidaViewModel();
             DataContext = AidaModel;
             ButtonMenu.MenuClicked += OnMenuButtonClick;
-
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            timer.Tick += (s, e) =>
-            {
-                double simulatedVolume = new Random().NextDouble();
-                VoiceCircleControl.ReactToVolume(simulatedVolume);
-            };
-            timer.Start();
         }
 
         private void OnMenuButtonClick(object sender, EventArgs e)
@@ -167,6 +159,10 @@ namespace RightHelp___Aida.Views
             // Finaliza a animação
             VoiceCircleControl.StopThinkingAnimation();
             var openAIAudioService = new OpenAIAudioService();
+            openAIAudioService.OnAudioVolume += (volume) =>
+            {
+                Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
+            };
             await openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
         }
 

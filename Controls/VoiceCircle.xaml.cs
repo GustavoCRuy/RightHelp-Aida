@@ -43,12 +43,12 @@ namespace RightHelp___Aida.Controls
 
         public void ReactToVolume(double volumeLevel)
         {
-            double scale = 1 + Math.Min(volumeLevel, 1.0) * 0.5;
+            double scale = 1 + Math.Min(volumeLevel, 1.0) * 1.5;
 
             var animationX = new DoubleAnimation
             {
                 To = scale,
-                Duration = TimeSpan.FromMilliseconds(200),
+                Duration = TimeSpan.FromMilliseconds(100),
                 AutoReverse = true,
                 EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
             };
