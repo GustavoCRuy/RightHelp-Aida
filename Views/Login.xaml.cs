@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.VisualBasic;
+using MySqlConnector;
 using RightHelp___Aida.Services;
+using RightHelp___Aida.Services.Constants;
 
 namespace RightHelp___Aida.Views
 {
@@ -22,6 +25,15 @@ namespace RightHelp___Aida.Views
             bool autenticado = await login.AuthenticateAsync();
             if (autenticado)
             {
+                // Buscar o UserId do usuário autenticado
+                using var connection = new MySqlConnection(Const.connectionString);
+                await connection.OpenAsync();
+                var cmd = new MySqlCommand("SELECT user_id FROM usuarios WHERE username = @username", connection);
+                cmd.Parameters.AddWithValue("@username", login.Username);
+
+                var result = await cmd.ExecuteScalarAsync();
+                UserSession.UserId = result?.ToString();
+
                 var mainWindow = new MainWindow();
                 mainWindow.Show();
 
