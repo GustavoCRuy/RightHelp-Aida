@@ -20,10 +20,12 @@ namespace RightHelp___Aida.Views
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
         private static string history;
+        private string CurrentSessionId;
         public AidaViewModel AidaModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            CurrentSessionId = Guid.NewGuid().ToString();
             UserInputBox.Focus();
             Keyboard.Focus(UserInputBox);
             AidaModel = new AidaViewModel();
