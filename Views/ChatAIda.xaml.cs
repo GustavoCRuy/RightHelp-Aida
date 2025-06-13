@@ -4,8 +4,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using OpenAI.Chat;
 using RightHelp___Aida.Controls;
+using RightHelp___Aida.Services;
 using RightHelp___Aida.Services.AiCore;
+using RightHelp___Aida.Services.DataBaseLogic;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 
@@ -127,43 +130,65 @@ namespace RightHelp___Aida.Views
                 return;
             }
 
-            // Exibe input do usuário com prefixo
             RespostaControl.AppendText(Environment.NewLine + "Você\n" + userInput + Environment.NewLine);
+
+            var userMessage = new MessageObject
+            {
+                SessionId = CurrentSessionId,
+                UserId = UserSession.UserId,
+                Role = "user",
+                Message = userInput,
+                Timestamp = DateTime.UtcNow
+            };
+            await userMessage.SalvarMensagemAsync(userMessage);
 
             UserInputBox.Text = "";
 
-            // Anima o círculo da IA
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
             var respostaCompleta = "";
-         
-            // Marca início da resposta da IA com prefixo
+
             RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
+
+            var temp = new MessageObject();
+            var chatHistory = await temp.BuscarHistoricoAsync(CurrentSessionId);
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
                 context: AidaPersonalityManager.GetContext(AidaState.CurrentPersona),
-                chatHistory: history,
+                chatHistory: chatHistory,
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
                     {
                         RespostaControl.AppendText(partial);
-                        respostaCompleta += partial;    
+                        respostaCompleta += partial;
                     });
                 });
 
             RespostaControl.AppendText(Environment.NewLine + Environment.NewLine);
 
-            // Finaliza a animação
+            var assistantMessage = new MessageObject
+            {
+                SessionId = CurrentSessionId,
+                UserId = UserSession.UserId,
+                Role = "assistant",
+                Message = respostaCompleta,
+                Timestamp = DateTime.UtcNow
+            };
+            await assistantMessage.SalvarMensagemAsync(assistantMessage);
+
             VoiceCircleControl.StopThinkingAnimation();
+
             var openAIAudioService = new OpenAIAudioService();
             openAIAudioService.OnAudioVolume += (volume) =>
             {
                 Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
             };
-            await openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
+
+            string vozSelecionada = AidaState.CurrentVoice.ToString().ToLower();
+            await openAIAudioService.PlaySpeechAsync(respostaCompleta, vozSelecionada);
         }
 
         private async void OnSendClick(object sender, RoutedEventArgs e)

@@ -8,6 +8,7 @@ using System.Windows;
 using OpenAI;
 using OpenAI.Chat;
 using RightHelp___Aida.Services.Constants;
+using RightHelp___Aida.Services.DataBaseLogic;
 
 namespace RightHelp___Aida.Services.AiCore
 {
@@ -44,7 +45,7 @@ namespace RightHelp___Aida.Services.AiCore
             /// <param name="textInput">Entrada do usuário</param>
             /// <param name="context">Contexto anterior ou instruções</param>
             /// <param name="onUpdate">Callback chamado a cada atualização da IA</param>
-            public async Task StreamResponseAsync(string textInput, string context, string chatHistory, Action<string> onUpdate)
+            public async Task StreamResponseAsync(string textInput, string context, List<MessageObject> chatHistory, Action<string> onUpdate)
             {
                 if (string.IsNullOrEmpty(textInput))
                 {
@@ -54,13 +55,25 @@ namespace RightHelp___Aida.Services.AiCore
 
                 try
                 {
-                    var messages = new List<ChatMessage>
-                    {
-                        ChatMessage.CreateSystemMessage(context + "," + chatHistory),
-                        ChatMessage.CreateUserMessage(textInput)
-                    };
+                    var messages = new List<ChatMessage>();
 
-                    chatHistory = chatHistory + ", " + textInput;
+                    // Mensagem de sistema
+                    messages.Add(ChatMessage.CreateSystemMessage(context));
+
+                    // Adiciona histórico
+                    if (chatHistory != null)
+                    {
+                        foreach (var msg in chatHistory)
+                        {
+                            if (msg.Role == "user")
+                                messages.Add(ChatMessage.CreateUserMessage(msg.Message));
+                            else if (msg.Role == "assistant")
+                                messages.Add(ChatMessage.CreateAssistantMessage(msg.Message));
+                        }
+                    }
+
+                    // Mensagem atual do usuário
+                    messages.Add(ChatMessage.CreateUserMessage(textInput));
 
                     var options = new ChatCompletionOptions
                     {
