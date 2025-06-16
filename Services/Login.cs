@@ -66,9 +66,9 @@ namespace RightHelp___Aida.Services
                 using var connection = new MySqlConnection(Const.connectionString);
                 await connection.OpenAsync();
 
-                var query = "INSERT INTO usuarios (user_id, username, password, email, first_name) VALUES (@user_id, @username, @password, @email, @firstName)";
+                var query = "INSERT INTO users (user_id, username, password, email, first_name) VALUES (@user_id, @username, @password, @email, @firstName)";
                 using var cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@user_id", Guid.NewGuid().ToString());
+                cmd.Parameters.AddWithValue("@user_id", Guid.NewGuid().ToString()); // Usar autoincrement
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));
                 cmd.Parameters.AddWithValue("@email", Email);
@@ -95,7 +95,7 @@ namespace RightHelp___Aida.Services
                 using var connection = new MySqlConnection(Const.connectionString);
                 await connection.OpenAsync();
 
-                var query = "SELECT COUNT(*) FROM usuarios WHERE username = @username AND password = @password";
+                var query = "SELECT COUNT(*) FROM users WHERE username = @username AND password = @password";
                 using var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));

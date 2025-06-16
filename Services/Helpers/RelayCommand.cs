@@ -27,5 +27,4 @@ namespace RightHelp___Aida.Services.Helpers
         public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
         public void Execute(object parameter) => _execute();
     }
-
 }

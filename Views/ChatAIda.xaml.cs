@@ -115,13 +115,13 @@ namespace RightHelp___Aida.Views
 
         }
         private async void UserInputBox_PreviewKeyDown(object sender, KeyEventArgs e)
-            {
+        {
                 if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
                 {
                     e.Handled = true;
                     await SendUserMessageAsync();
                 }
-            }
+        }
 
         private async Task SendUserMessageAsync()
         {
@@ -132,7 +132,7 @@ namespace RightHelp___Aida.Views
                 return;
             }
 
-            RespostaControl.AppendText(Environment.NewLine + "Você\n" + userInput + Environment.NewLine);
+            RespostaControl.AppendText(Environment.NewLine + "Você:\n" + userInput + Environment.NewLine);
 
             var userMessage = new MessageObject
             {
@@ -148,10 +148,10 @@ namespace RightHelp___Aida.Views
 
             await VoiceCircleControl.StartThinkingAnimation();
 
-            var chat = new ChatStream("gpt-4.1-nano");
+            var chat = new ChatStream("gpt-4o");
             var respostaCompleta = "";
 
-            RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
+            RespostaControl.AppendText(Environment.NewLine + "AI.da:\n");
 
             var temp = new MessageObject();
             var chatHistory = await temp.BuscarHistoricoAsync(CurrentSessionId);
@@ -167,7 +167,8 @@ namespace RightHelp___Aida.Views
                         RespostaControl.AppendText(partial);
                         respostaCompleta += partial;
                     });
-                });
+                }
+             );
 
             RespostaControl.AppendText(Environment.NewLine + Environment.NewLine);
 
