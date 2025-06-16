@@ -4,14 +4,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using OpenAI.Chat;
-using RightHelp___Aida.Controls;
 using RightHelp___Aida.Services;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.Services.DataBaseLogic;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
-
 
 namespace RightHelp___Aida.Views
 {
@@ -22,6 +19,7 @@ namespace RightHelp___Aida.Views
         private static string history;
         private string CurrentSessionId;
         public AidaViewModel AidaModel { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -142,7 +140,7 @@ namespace RightHelp___Aida.Views
                 Message = userInput,
                 Timestamp = DateTime.UtcNow
             };
-            await userMessage.SalvarMensagemAsync(userMessage);
+            await DataBaseLogic.SalvarMensagemAsync(userMessage);
 
             UserInputBox.Text = "";
 
@@ -154,7 +152,7 @@ namespace RightHelp___Aida.Views
             RespostaControl.AppendText(Environment.NewLine + "AI.da:\n");
 
             var temp = new MessageObject();
-            var chatHistory = await temp.BuscarHistoricoAsync(CurrentSessionId);
+            var chatHistory = await DataBaseLogic.BuscarHistoricoAsync(CurrentSessionId);
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
@@ -180,7 +178,7 @@ namespace RightHelp___Aida.Views
                 Message = respostaCompleta,
                 Timestamp = DateTime.UtcNow
             };
-            await assistantMessage.SalvarMensagemAsync(assistantMessage);
+            await DataBaseLogic.SalvarMensagemAsync(assistantMessage);
 
             VoiceCircleControl.StopThinkingAnimation();
 
