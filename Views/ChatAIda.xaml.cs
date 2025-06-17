@@ -59,7 +59,7 @@ namespace RightHelp___Aida.Views
                 ? -150                    // Fechar: ir para fora
                 : 0 + extraOffset;       // Abrir: ir para dentro com deslocamento extra
 
-            var animation = new DoubleAnimation
+            var animationSideBar = new DoubleAnimation
             {
                 From = from,
                 To = to,
@@ -69,7 +69,7 @@ namespace RightHelp___Aida.Views
 
             _isAnimatingSideBar = true;
 
-            animation.Completed += (s, e) =>
+            animationSideBar.Completed += (s, e) =>
             {
                 _sidebarOpen = !_sidebarOpen;
                 _isAnimatingSideBar = false;
@@ -77,7 +77,7 @@ namespace RightHelp___Aida.Views
                 SidebarTransform.X = to;
             };
 
-            SidebarTransform.BeginAnimation(TranslateTransform.XProperty, animation);
+            SidebarTransform.BeginAnimation(TranslateTransform.XProperty, animationSideBar);
         }
 
 
@@ -94,7 +94,7 @@ namespace RightHelp___Aida.Views
                 // Calcula novo offset
                 double newOffset = tb.Height - 30;
 
-                // Aplica animação suave no Y do TranslateTransform
+                // Aplica animação no Y do TranslateTransform
                 if (VoiceCircleControl.RenderTransform is TranslateTransform transform)
                 {
                     var animation = new DoubleAnimation

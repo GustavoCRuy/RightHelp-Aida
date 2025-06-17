@@ -28,6 +28,7 @@ namespace RightHelp___Aida.Services.DataBaseLogic
                 cmd.Parameters.AddWithValue("@message", mensagem.Message);
                 cmd.Parameters.AddWithValue("@timestamp", mensagem.Timestamp);
                 await cmd.ExecuteNonQueryAsync();
+                await conn.CloseAsync();
             }
             catch (Exception ex)
             {
@@ -62,6 +63,7 @@ namespace RightHelp___Aida.Services.DataBaseLogic
                         Timestamp = reader.GetDateTime("timestamp")
                     };
                     listMenssages.Add(msg);
+                    await conn.CloseAsync();
                 }
             }
             catch (Exception ex)

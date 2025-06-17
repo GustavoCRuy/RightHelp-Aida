@@ -27,9 +27,9 @@ namespace RightHelp___Aida.Views
                 if (autenticado)
                 {
                     // Buscar o UserId do usuário autenticado
-                    using var connection = new MySqlConnection(Const.connectionString);
-                    await connection.OpenAsync();
-                    var cmd = new MySqlCommand("SELECT user_id FROM users WHERE username = @username", connection);
+                    using var conn = new MySqlConnection(Const.connectionString);
+                    await conn.OpenAsync();
+                    var cmd = new MySqlCommand("SELECT user_id FROM users WHERE username = @username", conn);
                     cmd.Parameters.AddWithValue("@username", login.Username);
 
                     var result = await cmd.ExecuteScalarAsync();
@@ -37,7 +37,7 @@ namespace RightHelp___Aida.Views
 
                     var mainWindow = new MainWindow();
                     mainWindow.Show();
-
+                    await conn.CloseAsync();
                     Window.GetWindow(this)?.Close();
                 }
                 else

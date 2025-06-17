@@ -56,10 +56,5 @@ namespace RightHelp___Aida.Views
         {
             NavigationService?.Navigate(new Registro_Login());
         }
-
-        private void FirstNameBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
     }
 }

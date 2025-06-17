@@ -63,18 +63,18 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(Const.connectionString);
-                await connection.OpenAsync();
+                using var conn = new MySqlConnection(Const.connectionString);
+                await conn.OpenAsync();
 
-                var query = "INSERT INTO users (user_id, username, password, email, first_name) VALUES (@user_id, @username, @password, @email, @firstName)";
-                using var cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@user_id", Guid.NewGuid().ToString()); // Usar autoincrement
+                var query = "INSERT INTO users (username, password, email, first_name) VALUES (@username, @password, @email, @firstName)";
+                using var cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));
                 cmd.Parameters.AddWithValue("@email", Email);
                 cmd.Parameters.AddWithValue("@firstName", FirstName);
 
                 int result = await cmd.ExecuteNonQueryAsync();
+                await conn.CloseAsync();
                 return result > 0;
             }
             catch (Exception ex)
@@ -92,15 +92,16 @@ namespace RightHelp___Aida.Services
         {
             try
             {
-                using var connection = new MySqlConnection(Const.connectionString);
-                await connection.OpenAsync();
+                using var conn = new MySqlConnection(Const.connectionString);
+                await conn.OpenAsync();
 
                 var query = "SELECT COUNT(*) FROM users WHERE username = @username AND password = @password";
-                using var cmd = new MySqlCommand(query, connection);
+                using var cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@username", Username);
                 cmd.Parameters.AddWithValue("@password", HashUtils.ComputeSha256Hash(Password));
 
                 var result = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                await conn.CloseAsync();
                 return result > 0;
             }
             catch (Exception ex)
