@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySqlConnector;
+﻿using MySqlConnector;
 using RightHelp___Aida.Services.Constants;
 using System.Windows.Forms;
 
@@ -20,9 +15,8 @@ namespace RightHelp___Aida.Services.DataBaseLogic
                 using var conn = new MySqlConnection(Const.connectionString);
                 await conn.OpenAsync();
                 var cmd = new MySqlCommand(
-                    @"INSERT INTO righthelp.chat_history (session_id, user_id, role, message, timestamp)
-                    VALUES (@sessionId, @userId, @role, @message, @timestamp)", conn);
-                cmd.Parameters.AddWithValue("@sessionId", mensagem.SessionId);
+                    @"INSERT INTO righthelp.chat_history (user_id, role, message, timestamp)
+                    VALUES (@userId, @role, @message, @timestamp)", conn);
                 cmd.Parameters.AddWithValue("@userId", mensagem.UserId);
                 cmd.Parameters.AddWithValue("@role", mensagem.Role);
                 cmd.Parameters.AddWithValue("@message", mensagem.Message);
@@ -44,11 +38,11 @@ namespace RightHelp___Aida.Services.DataBaseLogic
                 using var conn = new MySqlConnection(Const.connectionString);
                 await conn.OpenAsync();
                 var cmd = new MySqlCommand(
-                    @"SELECT id, session_id, user_id, role, message, timestamp
+                    @"SELECT id, user_id, role, message, timestamp
                     FROM righthelp.chat_history
-                    WHERE session_id = @sessionId
+                    WHERE id = @id
                     ORDER BY timestamp ASC", conn);
-                cmd.Parameters.AddWithValue("@sessionId", sessionId);
+                cmd.Parameters.AddWithValue("@id", sessionId);
 
                 using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
@@ -56,7 +50,6 @@ namespace RightHelp___Aida.Services.DataBaseLogic
                     var msg = new MessageObject
                     {
                         Id = reader.GetInt32("id"),
-                        SessionId = reader.GetString("session_id"),
                         UserId = reader.GetString("user_id"),
                         Role = reader.GetString("role"),
                         Message = reader.GetString("message"),

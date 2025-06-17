@@ -17,13 +17,13 @@ namespace RightHelp___Aida.Views
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
         private static string history;
-        private string CurrentSessionId;
+        private string id;
         public AidaViewModel AidaModel { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            CurrentSessionId = Guid.NewGuid().ToString();
+            id = Guid.NewGuid().ToString();
             UserInputBox.Focus();
             Keyboard.Focus(UserInputBox);
             AidaModel = new AidaViewModel();
@@ -134,7 +134,6 @@ namespace RightHelp___Aida.Views
 
             var userMessage = new MessageObject
             {
-                SessionId = CurrentSessionId,
                 UserId = UserSession.UserId,
                 Role = "user",
                 Message = userInput,
@@ -152,7 +151,7 @@ namespace RightHelp___Aida.Views
             RespostaControl.AppendText(Environment.NewLine + "AI.da:\n");
 
             var temp = new MessageObject();
-            var chatHistory = await DataBaseLogic.BuscarHistoricoAsync(CurrentSessionId);
+            var chatHistory = await DataBaseLogic.BuscarHistoricoAsync(UserSession.UserId);
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
@@ -172,7 +171,6 @@ namespace RightHelp___Aida.Views
 
             var assistantMessage = new MessageObject
             {
-                SessionId = CurrentSessionId,
                 UserId = UserSession.UserId,
                 Role = "assistant",
                 Message = respostaCompleta,

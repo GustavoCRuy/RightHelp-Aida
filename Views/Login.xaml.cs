@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.VisualBasic;
 using MySqlConnector;
 using RightHelp___Aida.Services;
 using RightHelp___Aida.Services.Constants;
@@ -37,7 +38,7 @@ namespace RightHelp___Aida.Views
 
                     var mainWindow = new MainWindow();
                     mainWindow.Show();
-                    await conn.CloseAsync();
+
                     Window.GetWindow(this)?.Close();
                 }
                 else
