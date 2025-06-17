@@ -123,20 +123,32 @@ namespace RightHelp___Aida.Views
 
         private async Task SendUserMessageAsync()
         {
-            string userInput = UserInputBox.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(userInput))
+            string hoje = DateTime.Now.ToString("dd/MM/yyyy");
+
+            if (UserInputBox.Text == "clear")
+            {
+                RespostaControl.ClearText();
+                return;
+            }
+            // Texto enviado para a OpenAI (inclui a data)
+            string prompt = $"Hoje é: {hoje}\n{UserInputBox.Text?.Trim()}";
+
+            // Texto exibido para o usuário (não inclui a data)
+            string userVisibleText = UserInputBox.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(userVisibleText))
             {
                 MessageBox.Show("Por favor, digite algo antes de enviar.");
                 return;
             }
 
-            RespostaControl.AppendText(Environment.NewLine + "Você:\n" + userInput + Environment.NewLine);
+            RespostaControl.AppendText(Environment.NewLine + "Você:\n" + userVisibleText + Environment.NewLine);
 
             var userMessage = new MessageObject
             {
                 UserId = UserSession.UserId,
                 Role = "user",
-                Message = userInput,
+                Message = prompt,
                 Timestamp = DateTime.UtcNow
             };
             await DataBaseLogic.SalvarMensagemAsync(userMessage);
@@ -154,7 +166,7 @@ namespace RightHelp___Aida.Views
             var chatHistory = await DataBaseLogic.BuscarHistoricoAsync(UserSession.UserId);
 
             await chat.StreamResponseAsync(
-                textInput: userInput,
+                textInput: prompt,
                 context: AidaPersonalityManager.GetContext(AidaState.CurrentPersona),
                 chatHistory: chatHistory,
                 onUpdate: (partial) =>
