@@ -11,6 +11,11 @@
 
   <ItemGroup>
     <None Remove="Assets\Background 4k.png" />
+    <None Remove="Assets\Images\microphone-disable.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\microphone-disable.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +29,7 @@
     <Resource Include="Assets\Images\Background 4k.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Images\microphone-enable.png" />
   </ItemGroup>
 	
 </Project>

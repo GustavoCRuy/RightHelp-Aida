@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using RightHelp___Aida.Controls;
 using RightHelp___Aida.Services.AiCore;
@@ -14,9 +15,12 @@ namespace RightHelp___Aida.Views
 {
     public partial class MainWindow : Window
     {
+        private string respostaCompleta = ""; // Declare respostaCompleta as a class-level field
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
         private static string history;
+        private bool playSpeech = true; // Variável para controlar se o áudio deve ser reproduzido
+                                      
         public AidaViewModel AidaModel { get; set; }
         public MainWindow()
         {
@@ -26,6 +30,12 @@ namespace RightHelp___Aida.Views
             AidaModel = new AidaViewModel();
             DataContext = AidaModel;
             ButtonMenu.MenuClicked += OnMenuButtonClick;
+
+            // Defina a imagem inicial do botão conforme playSpeech
+            var uri = playSpeech
+                ? new Uri("pack://application:,,,/Assets/Images/microphone-enable.png")
+                : new Uri("pack://application:,,,/Assets/Images/microphone-disable.png");
+            PlaySpeechImage.Source = new BitmapImage(uri);
         }
 
         private void OnMenuButtonClick(object sender, EventArgs e)
@@ -131,12 +141,11 @@ namespace RightHelp___Aida.Views
             RespostaControl.AppendText(Environment.NewLine + "Você\n" + userInput + Environment.NewLine);
 
             UserInputBox.Text = "";
-
+            respostaCompleta  = "";
             // Anima o círculo da IA
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
-            var respostaCompleta = "";
          
             // Marca início da resposta da IA com prefixo
             RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
@@ -154,16 +163,47 @@ namespace RightHelp___Aida.Views
                     });
                 });
 
+            if (playSpeech == true)
+            {
+                try
+                {
+                    var openAIAudioService = new OpenAIAudioService();
+                    openAIAudioService.OnAudioVolume += (volume) =>
+                    {
+                        Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
+                    };
+                    #pragma warning disable CS4014 // Como esta chamada não é esperada, a execução do método atual continua antes de a chamada ser concluída
+                    openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
+                    #pragma warning restore CS4014
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao reproduzir áudio: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
             RespostaControl.AppendText(Environment.NewLine + Environment.NewLine);
 
             // Finaliza a animação
             VoiceCircleControl.StopThinkingAnimation();
-            var openAIAudioService = new OpenAIAudioService();
-            openAIAudioService.OnAudioVolume += (volume) =>
+        }
+
+        private async void TogglePlaySpeechButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-                Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
-            };
-            await openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
+                playSpeech = !playSpeech;
+
+                var uri = playSpeech
+                    ? new Uri("pack://application:,,,/Assets/Images/microphone-enable.png")
+                    : new Uri("pack://application:,,,/Assets/Images/microphone-disable.png");
+
+                PlaySpeechImage.Source = new BitmapImage(uri);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao trocar imagem: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private async void OnSendClick(object sender, RoutedEventArgs e)
@@ -174,16 +214,6 @@ namespace RightHelp___Aida.Views
         private void UserInputBox_GotFocus(object sender, RoutedEventArgs e)
         {
             Keyboard.Focus(UserInputBox);
-        }
-
-        private void TrocarParaLeitura()
-        {
-           // AidaModel.ModoAtual = AidaModoInteracao.ModoLeitura;
-        }
-
-        private void TrocarParaEscrita()
-        {
-           // AidaModel.ModoAtual = AidaModoInteracao.ModoEscrita;
         }
 
         private void PersonaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -213,6 +243,16 @@ namespace RightHelp___Aida.Views
 
             VoiceComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaVoice));
             VoiceComboBox.SelectedItem = AidaState.CurrentVoice;
+        }
+
+        private void FecharAplicativo()
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void OnSairClick(object sender, RoutedEventArgs e)
+        {
+            FecharAplicativo();
         }
     }
 }

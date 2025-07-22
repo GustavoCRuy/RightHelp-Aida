@@ -34,6 +34,21 @@
                 <RowDefinition Height="Auto" MinHeight="102" />
             </Grid.RowDefinitions>
 
+            <!-- botao que toca o audio -->
+            <Button
+                x:Name="PlaySpeechButton"
+                Click="TogglePlaySpeechButton_Click"
+                Width="30"
+                Height="30"
+                BorderThickness="0"
+                Background="Transparent"
+                ToolTip="Microfone"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="10,10,30,0">
+                <Image x:Name="PlaySpeechImage" Source="/Assets/Images/microphone.png" Stretch="Uniform" Height="30" Width="22"/>
+            </Button>
+
             <controls:RespostaTextBox x:Name="RespostaControl"
                                       Grid.Row="0"
                                       Margin="20,14,20,20"
@@ -145,7 +160,7 @@
                               Margin="0,5,0,5"
                               SelectedItem="{Binding SelectedVoice, Mode=TwoWay}"
                               SelectionChanged="VoiceComboBox_SelectionChanged" Width="130"/>
-                    <controls:ButtonTemplate Width="131">
+                    <controls:ButtonTemplate Command="{Binding SairCommand}" Width="131">
                         <TextBlock Text="Sair" Foreground="LightGray" />
                     </controls:ButtonTemplate>
                 </StackPanel>
