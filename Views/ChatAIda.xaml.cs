@@ -137,18 +137,19 @@ namespace RightHelp___Aida.Views
                 return;
             }
 
-            // Exibe input do usuário com prefixo
-            RespostaControl.AppendText(Environment.NewLine + "Você\n" + userInput + Environment.NewLine);
+            // Exibe input do usuário com prefixo em branco
+            RespostaControl.AppendParagraph("Você", Brushes.White);
+            RespostaControl.AppendParagraph(userInput, Brushes.White);
 
             UserInputBox.Text = "";
-            respostaCompleta  = "";
-            // Anima o círculo da IA
+            respostaCompleta = "";
+
             await VoiceCircleControl.StartThinkingAnimation();
 
             var chat = new ChatStream("gpt-4.1-nano");
-         
-            // Marca início da resposta da IA com prefixo
-            RespostaControl.AppendText(Environment.NewLine + "AI.da\n");
+
+            // Prefixo da IA em azul claro
+            RespostaControl.AppendParagraph("\nAI.da\n", Brushes.LightBlue);
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
@@ -158,8 +159,8 @@ namespace RightHelp___Aida.Views
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        RespostaControl.AppendText(partial);
-                        respostaCompleta += partial;    
+                        RespostaControl.AppendTextToLastParagraph(partial);
+                        respostaCompleta += partial;
                     });
                 });
 
@@ -172,8 +173,8 @@ namespace RightHelp___Aida.Views
                     {
                         Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
                     };
-                    #pragma warning disable CS4014 // Como esta chamada não é esperada, a execução do método atual continua antes de a chamada ser concluída
-                    openAIAudioService.PlaySpeechAsync(respostaCompleta, "alloy");
+                    #pragma warning disable CS4014
+                    openAIAudioService.PlaySpeechAsync(respostaCompleta, AidaPersonalities.AidaVoiceManager.GetVoiceName(AidaState.CurrentVoice));
                     #pragma warning restore CS4014
                 }
                 catch (Exception ex)
@@ -182,11 +183,11 @@ namespace RightHelp___Aida.Views
                 }
             }
 
-            RespostaControl.AppendText(Environment.NewLine + Environment.NewLine);
+            RespostaControl.AppendParagraph("", Brushes.Transparent); // Espaço entre blocos
 
-            // Finaliza a animação
             VoiceCircleControl.StopThinkingAnimation();
         }
+
 
         private async void TogglePlaySpeechButton_Click(object sender, RoutedEventArgs e)
         {

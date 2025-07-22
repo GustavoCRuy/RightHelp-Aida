@@ -23,21 +23,32 @@ namespace RightHelp___Aida.Controls
         }
 
         // Método para adicionar texto na TextBox de forma thread-safe e auto-scroll
-        public void AppendText(string text)
-        {
-            // Executa no thread da UI para evitar problemas com acesso a controles
-           
-                RespostaTextBoxControl.AppendText(text);
-                RespostaTextBoxControl.ScrollToEnd();
-            
-        }
-        public void ClearText()
+       public void AppendParagraph(string text, Brush color)
         {
             Dispatcher.Invoke(() =>
             {
-                RespostaTextBoxControl.Clear();
+                var paragraph = new Paragraph(new Run(text))
+                {
+                    Foreground = color,
+                    Margin = new Thickness(0, 4, 0, 0)
+                };
+                RespostaTextBoxControl.Document.Blocks.Add(paragraph);
+                RespostaTextBoxControl.ScrollToEnd();
             });
         }
+
+        public void AppendTextToLastParagraph(string text)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (RespostaTextBoxControl.Document.Blocks.LastBlock is Paragraph lastParagraph)
+                {
+                    lastParagraph.Inlines.Add(new Run(text));
+                    RespostaTextBoxControl.ScrollToEnd();
+                }
+            });
+        }
+
     }
 }
 

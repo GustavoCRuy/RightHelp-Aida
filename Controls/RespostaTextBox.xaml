@@ -9,15 +9,19 @@
     <Grid>
         <Border Background="#AA000000" Padding="10" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBox x:Name="RespostaTextBoxControl"
-                     IsReadOnly="True"
-                     Background="Transparent"
-                     Foreground="White"
-                     BorderThickness="0"
-                     FontSize="16"
-                     TextWrapping="Wrap"
-                     AcceptsReturn="True"
-                     VerticalScrollBarVisibility="Hidden" />
+                <RichTextBox x:Name="RespostaTextBoxControl"
+                             IsReadOnly="True"
+                             Background="Transparent"
+                             Foreground="White"
+                             BorderThickness="0"
+                             FontSize="16"
+                             VerticalScrollBarVisibility="Hidden"
+                             AcceptsReturn="True"
+                             IsDocumentEnabled="True"
+                             Padding="0"
+                             >
+                    <FlowDocument />
+                </RichTextBox>
             </ScrollViewer>
         </Border>
     </Grid>
