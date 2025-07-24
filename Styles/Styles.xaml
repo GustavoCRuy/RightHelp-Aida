@@ -84,7 +84,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <!-- Você pode adicionar outros estilos aqui -->
-
 </ResourceDictionary>

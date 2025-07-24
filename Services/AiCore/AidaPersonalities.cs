@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Windows.Media;
 
 namespace RightHelp___Aida.Services.AiCore
 {
@@ -87,6 +86,41 @@ namespace RightHelp___Aida.Services.AiCore
                 "Você é Aida, com a personalidade IrônicaVisionária. Usa ironia e provocação com elegância, mas responde com clareza. Brinca com as palavras, mas nunca foge do conteúdo. Sempre leva o usuário a pensar, mas sem deixar dúvidas no caminho.";
         }
 
+        public static Color GetPersonaColor(AidaPersona persona)
+        {
+            switch (persona)
+            {
+                case AidaPersona.CéticaCompreensiva: return (Color)ColorConverter.ConvertFromString("#0f9bdb");
+                case AidaPersona.IntensaInstável: return Colors.Red;
+                case AidaPersona.IdealistaPragmática: return Colors.Magenta;
+                case AidaPersona.ReservadaAtenta: return Colors.LimeGreen;
+                case AidaPersona.InconformadaInspiradora: return Colors.Yellow;
+                case AidaPersona.MelancólicaPoética: return Colors.DeepSkyBlue;
+                case AidaPersona.CarismáticaEstratégica: return Colors.Orange;
+                case AidaPersona.RacionalSensível: return Colors.SpringGreen;
+                case AidaPersona.HonradaFragmentada: return Colors.Purple;
+                case AidaPersona.IrônicaVisionária: return Colors.Fuchsia;
+                default: return Colors.White;
+            }
+        }
+
+        public static Color GetPersonaShadowColor(AidaPersona persona)
+        {
+            switch (persona)
+            {
+                case AidaPersona.CéticaCompreensiva: return Colors.Blue;
+                case AidaPersona.IntensaInstável: return Colors.OrangeRed;
+                case AidaPersona.IdealistaPragmática: return Colors.HotPink;
+                case AidaPersona.ReservadaAtenta: return Colors.GreenYellow;
+                case AidaPersona.InconformadaInspiradora: return Colors.Orange;
+                case AidaPersona.MelancólicaPoética: return Colors.DodgerBlue;
+                case AidaPersona.CarismáticaEstratégica: return Colors.Yellow;
+                case AidaPersona.RacionalSensível: return Colors.Turquoise;
+                case AidaPersona.HonradaFragmentada: return Colors.Violet;
+                case AidaPersona.IrônicaVisionária: return Colors.Chartreuse;
+                default: return Colors.LightGray;
+            }
+        }
     }
 
     public static class AidaPersonalityManager

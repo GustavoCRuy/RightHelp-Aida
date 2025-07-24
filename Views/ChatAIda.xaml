@@ -160,9 +160,9 @@
                               Margin="0,5,0,5"
                               SelectedItem="{Binding SelectedVoice, Mode=TwoWay}"
                               SelectionChanged="VoiceComboBox_SelectionChanged" Width="130"/>
-                    <controls:ButtonTemplate Command="{Binding SairCommand}" Width="131">
+                    <Button Click="OnSairClick" Width="131" Background="Transparent">
                         <TextBlock Text="Sair" Foreground="LightGray" />
-                    </controls:ButtonTemplate>
+                    </Button>
                 </StackPanel>
             </Border>
 

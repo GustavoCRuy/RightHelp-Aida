@@ -5,7 +5,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using RightHelp___Aida.Controls;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
@@ -20,7 +19,8 @@ namespace RightHelp___Aida.Views
         private bool _sidebarOpen = false;
         private static string history;
         private bool playSpeech = true; // Variável para controlar se o áudio deve ser reproduzido
-                                      
+        private bool isFirstMessageSent = false;
+
         public AidaViewModel AidaModel { get; set; }
         public MainWindow()
         {
@@ -28,6 +28,7 @@ namespace RightHelp___Aida.Views
             UserInputBox.Focus();
             Keyboard.Focus(UserInputBox);
             AidaModel = new AidaViewModel();
+            AidaModel.AlternarModoCommand.Execute(null);
             DataContext = AidaModel;
             ButtonMenu.MenuClicked += OnMenuButtonClick;
 
@@ -146,6 +147,14 @@ namespace RightHelp___Aida.Views
 
             await VoiceCircleControl.StartThinkingAnimation();
 
+            if (!isFirstMessageSent)
+            {
+                isFirstMessageSent = true;
+
+                if (AidaModel.AlternarModoCommand.CanExecute(null))
+                    AidaModel.AlternarModoCommand.Execute(null);
+            }
+
             var chat = new ChatStream("gpt-4.1-nano");
 
             // Prefixo da IA em azul claro
@@ -222,8 +231,10 @@ namespace RightHelp___Aida.Views
             if (PersonaComboBox.SelectedItem is AidaPersonalities.AidaPersona selected)
             {
                 AidaState.CurrentPersona = selected;
-                // Atualiza o contexto da IA, se necessário
-                // Ex: recarregar o ChatStream com novo contexto ou salvar preferência
+                var color = AidaPersonalities.GetPersonaColor(selected);
+                var shadowColor = AidaPersonalities.GetPersonaShadowColor(selected);
+                VoiceCircleControl.SetPersonaColor(color);
+                VoiceCircleControl.SetPersonaShadow(shadowColor);
             }
         }
 
@@ -232,8 +243,6 @@ namespace RightHelp___Aida.Views
             if (VoiceComboBox.SelectedItem is AidaPersonalities.AidaVoice selected)
             {
                 AidaState.CurrentVoice = selected;
-                // Atualiza a voz da IA.
-                // Ex: recarregar o ChatStream com novo contexto ou salvar preferência
             }
         }
 
@@ -246,14 +255,9 @@ namespace RightHelp___Aida.Views
             VoiceComboBox.SelectedItem = AidaState.CurrentVoice;
         }
 
-        private void FecharAplicativo()
-        {
-            Application.Current.Shutdown();
-        }
-
         private void OnSairClick(object sender, RoutedEventArgs e)
         {
-            FecharAplicativo();
+            this.Close();
         }
     }
 }

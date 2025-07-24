@@ -5,6 +5,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Windows.Media.Effects;
 
 namespace RightHelp___Aida.Controls
 {
@@ -198,6 +199,25 @@ namespace RightHelp___Aida.Controls
             }
         }
 
+        public void SetPersonaColor(Color color)
+        {
+            VoiceEllipse.Fill = new SolidColorBrush(color);
+            InnerGuideEllipse.Stroke = new SolidColorBrush(color); // se quiser mudar o contorno também
+        }
+
+        public void SetPersonaShadow(Color shadowColor)
+        {
+            var shadow = new DropShadowEffect
+            {
+                Color = shadowColor,
+                BlurRadius = 15,
+                Direction = 270,
+                ShadowDepth = 6,
+                Opacity = 0.6
+            };
+            VoiceEllipse.Effect = shadow;
+            InnerGuideEllipse.Effect = shadow;
+        }
 
     }
 }

@@ -12,6 +12,7 @@ namespace RightHelp___Aida.ViewModels
 {
     public class AidaViewModel : INotifyPropertyChanged
     {
+        private bool ellipseInFront = true;
         private AidaModoInteracao modoAtual = AidaModoInteracao.ModoEscrita;
 
         public AidaModoInteracao ModoAtual
@@ -39,7 +40,27 @@ namespace RightHelp___Aida.ViewModels
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
         protected void OnPropertyChanged(string nome) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nome));
+
+        public bool EllipseInFront
+        {
+            get => ellipseInFront;
+            set
+            {
+                if (ellipseInFront != value)
+                {
+                    ellipseInFront = value;
+                    OnPropertyChanged(nameof(EllipseInFront));
+                }
+            }
+        }
+        public void SetEllipsePosition(bool inFront)
+        {
+            EllipseInFront = inFront;
+        }
     }
+
+
 }
