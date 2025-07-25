@@ -57,7 +57,7 @@ namespace RightHelp___Aida.Views
         private void CarregarHistoricoDoBanco()
         {
             // Obtém a personalidade selecionada
-            var systemPrompt = AidaPersonalities.GetPersonaDescription(AidaState.CurrentPersona);
+            var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona);
             history = dbLogic.MontarContexto(usuarioId, systemPrompt, 20);
         }
 

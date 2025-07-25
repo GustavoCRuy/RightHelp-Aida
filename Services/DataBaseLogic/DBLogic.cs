@@ -46,7 +46,7 @@ namespace RightHelp___Aida.Services.DataBaseLogic
             return false;
         }
 
-        public bool InserirConversa(int usuarioId, string pergunta, string resposta)
+        public bool InserirConversa(int usuario_id, string pergunta, string resposta)
         {
             if (DetectaSQLInjection(pergunta) || DetectaSQLInjection(resposta))
             {
@@ -57,9 +57,9 @@ namespace RightHelp___Aida.Services.DataBaseLogic
             {
                 conn.Open();
                 using (var cmd = new MySqlCommand(
-                    "INSERT INTO Conversas (UsuarioId, Pergunta, Resposta, Timestamp) VALUES (@usuarioId, @pergunta, @resposta, @timestamp)", conn))
+                    "INSERT INTO historico_conversa (usuario_id, Pergunta, Resposta, Timestamp) VALUES (@usuario_id, @pergunta, @resposta, @timestamp)", conn))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioId", usuarioId);
+                    cmd.Parameters.AddWithValue("@usuario_id", usuario_id);
                     cmd.Parameters.AddWithValue("@pergunta", pergunta);
                     cmd.Parameters.AddWithValue("@resposta", resposta);
                     cmd.Parameters.AddWithValue("@timestamp", DateTime.Now);
@@ -71,16 +71,16 @@ namespace RightHelp___Aida.Services.DataBaseLogic
         }
 
         // Método para buscar o histórico de conversa de um usuário
-        public List<(string Pergunta, string Resposta)> BuscarHistorico(int usuarioId, int limite = 20)
+        public List<(string Pergunta, string Resposta)> BuscarHistorico(int usuario_id, int limite = 20)
         {
             var historico = new List<(string, string)>();
             using (var conn = new MySqlConnection(_connectionString))
             {
                 conn.Open();
                 using (var cmd = new MySqlCommand(
-                    "SELECT Pergunta, Resposta FROM Conversas WHERE UsuarioId = @usuarioId ORDER BY Timestamp DESC LIMIT @limite", conn))
+                    "SELECT Pergunta, Resposta FROM historico_conversa WHERE usuario_id = @usuario_id ORDER BY Timestamp DESC LIMIT @limite", conn))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioId", usuarioId);
+                    cmd.Parameters.AddWithValue("@usuario_id", usuario_id);
                     cmd.Parameters.AddWithValue("@limite", limite);
 
                     using (var reader = cmd.ExecuteReader())
@@ -98,9 +98,9 @@ namespace RightHelp___Aida.Services.DataBaseLogic
         }
 
         // Método para montar contexto a partir do histórico (para API)
-        public string MontarContexto(int usuarioId, string systemPrompt, int limite = 20)
+        public string MontarContexto(int usuario_id, string systemPrompt, int limite = 20)
         {
-            var historico = BuscarHistorico(usuarioId, limite);
+            var historico = BuscarHistorico(usuario_id, limite);
             var contexto = new List<Dictionary<string, string>>();
 
             contexto.Add(new Dictionary<string, string>

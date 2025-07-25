@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RightHelp - Aida": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "OPENAI_API_KEY": "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"
+      }
+    }
+  }
+}
