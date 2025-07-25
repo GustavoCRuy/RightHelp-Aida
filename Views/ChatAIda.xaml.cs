@@ -9,6 +9,9 @@ using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 
+// Adicione:
+using RightHelp___Aida.Services.DataBaseLogic;
+using RightHelp___Aida.Services.Constants;
 
 namespace RightHelp___Aida.Views
 {
@@ -20,8 +23,16 @@ namespace RightHelp___Aida.Views
         private static string history;
         private bool playSpeech = true; // Variável para controlar se o áudio deve ser reproduzido
         private bool isFirstMessageSent = false;
+        private OpenAIAudioService? _openAIAudioService;
 
         public AidaViewModel AidaModel { get; set; }
+
+        // Instância do DBLogic usando a string de conexão centralizada
+        private DBLogic dbLogic = new DBLogic();
+
+        // Id do usuário - ajuste para pegar do login/autenticação real
+        private int usuarioId = 1; // exemplo fixo para teste
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +48,17 @@ namespace RightHelp___Aida.Views
                 ? new Uri("pack://application:,,,/Assets/Images/microphone-enable.png")
                 : new Uri("pack://application:,,,/Assets/Images/microphone-disable.png");
             PlaySpeechImage.Source = new BitmapImage(uri);
+
+            // Carrega histórico do banco para o chat
+            CarregarHistoricoDoBanco();
+        }
+
+        // Carrega histórico do banco ao iniciar
+        private void CarregarHistoricoDoBanco()
+        {
+            // Obtém a personalidade selecionada
+            var systemPrompt = AidaPersonalities.GetPersonaDescription(AidaState.CurrentPersona);
+            history = dbLogic.MontarContexto(usuarioId, systemPrompt, 20);
         }
 
         private void OnMenuButtonClick(object sender, EventArgs e)
@@ -118,16 +140,16 @@ namespace RightHelp___Aida.Views
                 // Scroll para o fim do texto
                 InputScrollViewer?.ScrollToEnd();
             }
-
         }
+
         private async void UserInputBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
             {
-                if (e.Key == Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
-                {
-                    e.Handled = true;
-                    await SendUserMessageAsync();
-                }
+                e.Handled = true;
+                await SendUserMessageAsync();
             }
+        }
 
         private async Task SendUserMessageAsync()
         {
@@ -160,10 +182,14 @@ namespace RightHelp___Aida.Views
             // Prefixo da IA em azul claro
             RespostaControl.AppendParagraph("\nAI.da\n", Brushes.LightBlue);
 
+            // Obtém a personalidade atual para o contexto
+            var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona); // Só o texto da personalidade
+            var chatHistory = dbLogic.MontarContexto(usuarioId, systemPrompt, 20); // Contexto completo (system + histórico)
+
             await chat.StreamResponseAsync(
                 textInput: userInput,
-                context: AidaPersonalityManager.GetContext(AidaState.CurrentPersona),
-                chatHistory: history,
+                context: systemPrompt,       // Só a personalidade/instrução
+                chatHistory: chatHistory,    // O contexto JSON completo
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
@@ -173,18 +199,21 @@ namespace RightHelp___Aida.Views
                     });
                 });
 
+            // Salva pergunta e resposta no banco de dados
+            dbLogic.InserirConversa(usuarioId, userInput, respostaCompleta);
+
             if (playSpeech == true)
             {
                 try
                 {
-                    var openAIAudioService = new OpenAIAudioService();
-                    openAIAudioService.OnAudioVolume += (volume) =>
+                    _openAIAudioService = new OpenAIAudioService();
+                    _openAIAudioService.OnAudioVolume += (volume) =>
                     {
                         Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
                     };
-                    #pragma warning disable CS4014
-                    openAIAudioService.PlaySpeechAsync(respostaCompleta, AidaPersonalities.AidaVoiceManager.GetVoiceName(AidaState.CurrentVoice));
-                    #pragma warning restore CS4014
+                    await _openAIAudioService.PlaySpeechAsync(respostaCompleta, AidaPersonalities.AidaVoiceManager.GetVoiceName(AidaState.CurrentVoice));
+
+                    _openAIAudioService.Equals(null);
                 }
                 catch (Exception ex)
                 {
@@ -193,15 +222,21 @@ namespace RightHelp___Aida.Views
             }
 
             RespostaControl.AppendParagraph("", Brushes.Transparent); // Espaço entre blocos
-
             VoiceCircleControl.StopThinkingAnimation();
-        }
 
+            // Atualiza histórico do banco após mensagem
+            CarregarHistoricoDoBanco();
+        }
 
         private async void TogglePlaySpeechButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                if (_openAIAudioService != null && _openAIAudioService.IsAudioPlaying())
+                {
+                    _openAIAudioService.StopAudio();
+                }
+
                 playSpeech = !playSpeech;
 
                 var uri = playSpeech
@@ -235,6 +270,9 @@ namespace RightHelp___Aida.Views
                 var shadowColor = AidaPersonalities.GetPersonaShadowColor(selected);
                 VoiceCircleControl.SetPersonaColor(color);
                 VoiceCircleControl.SetPersonaShadow(shadowColor);
+
+                // Atualiza histórico do banco ao mudar personalidade
+                CarregarHistoricoDoBanco();
             }
         }
 

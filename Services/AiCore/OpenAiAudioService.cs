@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,8 +6,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using RightHelp___Aida.Services.Constants;
-using NAudio.Wave;
 using System.Text.Json;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
 namespace RightHelp___Aida.Services.AiCore
@@ -16,6 +15,8 @@ namespace RightHelp___Aida.Services.AiCore
     public class OpenAIAudioService
     {
         private readonly string _apiKey;
+        private WaveOutEvent? _waveOut;
+        private MeteringSampleProvider? _meteringProvider;
 
         public OpenAIAudioService()
         {
@@ -24,9 +25,9 @@ namespace RightHelp___Aida.Services.AiCore
 
         public event Action<float>? OnAudioVolume;
 
-        public async Task PlaySpeechAsync(string text, string voice, string outputFile = "output.mp3")
+        public async Task PlaySpeechAsync(string text, string voice)
         {
-            // 1. Gera o arquivo de áudio usando OpenAI API
+            byte[] audioData;
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
@@ -40,40 +41,55 @@ namespace RightHelp___Aida.Services.AiCore
                 var json = JsonSerializer.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-
                 var response = await client.PostAsync("https://api.openai.com/v1/audio/speech", content);
                 response.EnsureSuccessStatusCode();
 
-                var audioData = await response.Content.ReadAsByteArrayAsync();
-                await File.WriteAllBytesAsync(outputFile, audioData);
+                audioData = await response.Content.ReadAsByteArrayAsync();
             }
 
-            // 2. Toca o arquivo
-            using (var audioFile = new AudioFileReader(outputFile))
+            using (var ms = new MemoryStream(audioData))
+            using (var mp3Reader = new Mp3FileReader(ms))
             {
-                var sampleChannel = new SampleChannel(audioFile, true);
-                var meteringProvider = new MeteringSampleProvider(sampleChannel);
+                var sampleProvider = mp3Reader.ToSampleProvider();
 
-                meteringProvider.StreamVolume += (s, a) =>
+                // MeteringSampleProvider para volume
+                _meteringProvider = new MeteringSampleProvider(sampleProvider);
+                _meteringProvider.StreamVolume += (s, e) =>
                 {
-                    // a.MaxSampleValues[0] é o volume RMS do canal esquerdo (mono/estéreo)
-                    OnAudioVolume?.Invoke(a.MaxSampleValues.Max());
+                    OnAudioVolume?.Invoke(e.MaxSampleValues[0]); // Canal esquerdo ou mono
                 };
 
-                using (var outputDevice = new WaveOutEvent())
-                {
-                    outputDevice.Init(meteringProvider);
-                    outputDevice.Play();
+                _waveOut = new WaveOutEvent();
+                _waveOut.Init(_meteringProvider);
+                _waveOut.Play();
 
-                    while (outputDevice.PlaybackState == PlaybackState.Playing)
-                    {
-                        await Task.Delay(50);
-                    }
+                // Aguarda até terminar
+                while (_waveOut.PlaybackState == PlaybackState.Playing)
+                {
+                    await Task.Delay(50);
                 }
+
+                // Libera recursos e zera instâncias
+                _waveOut.Dispose();
+                _waveOut = null;
+                _meteringProvider = null;
             }
-            if (File.Exists(outputFile))
-                File.Delete(outputFile);
+        }
+
+        public void StopAudio()
+        {
+            if (_waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing)
+            {
+                _waveOut.Stop();
+            }
+            _waveOut?.Dispose();
+            _waveOut = null;
+            _meteringProvider = null;
+        }
+
+        public bool IsAudioPlaying()
+        {
+            return _waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing;
         }
     }
 }
- 
