@@ -1,8 +1,10 @@
 ﻿using MySqlConnector;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using RightHelp___Aida.Services.Constants;
+using System.Collections.Generic;
 
 namespace RightHelp___Aida.Services
 {
@@ -12,12 +14,32 @@ namespace RightHelp___Aida.Services
         public string? Password { get; set; }
         public string? Email { get; set; }
         public string? FirstName { get; set; }
+
+        private static readonly string[] dangerousWords = new[]
+        {
+            "select", "insert", "delete", "drop", "--", ";", "'", "\"", "or", "and", "union", "update"
+        };
+
+        public bool ContainsDangerousWords(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return false;
+            var lowerValue = value.ToLower();
+            return dangerousWords.Any(word => lowerValue.Contains(word));
+        }
+
         public bool IsValid(out string errorMessage)
         {
             Username = Username?.Trim();
             Password = Password?.Trim();
             Email = Email?.Trim();
             FirstName = FirstName?.Trim();
+
+            if (ContainsDangerousWords(Username ?? "") || ContainsDangerousWords(Password ?? "") ||
+                ContainsDangerousWords(Email ?? "") || ContainsDangerousWords(FirstName ?? ""))
+            {
+                errorMessage = "Campo contém comandos/palavras perigosas! Tente novamente sem SQL Injection 😉";
+                return false;
+            }
 
             if (string.IsNullOrWhiteSpace(Username) || Username.Length < 3)
             {
@@ -53,6 +75,7 @@ namespace RightHelp___Aida.Services
             errorMessage = "";
             return true;
         }
+
 
 
         /// <summary>
