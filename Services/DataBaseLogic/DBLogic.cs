@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using MySqlConnector;
 using RightHelp___Aida.Services.Constants;
 
@@ -39,9 +40,12 @@ namespace RightHelp___Aida.Services.DataBaseLogic
             foreach (var padrao in padroesPerigosos)
             {
                 if (Regex.IsMatch(texto, padrao, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                {
+                    MessageBox.Show("SQL Injection? Bobinho...");
                     return true;
-            }
+                }
 
+            }
             // Permite perguntas e respostas com palavras reservadas (select, drop, etc) fora desses padrões
             return false;
         }

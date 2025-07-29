@@ -8,39 +8,37 @@ using System.Windows.Threading;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
-
-// Adicione:
 using RightHelp___Aida.Services.DataBaseLogic;
-using RightHelp___Aida.Services.Constants;
+using RightHelp___Aida.Services;
 
 namespace RightHelp___Aida.Views
 {
     public partial class MainWindow : Window
     {
-        private string respostaCompleta = ""; // Declare respostaCompleta as a class-level field
+        private string respostaCompleta = "";
         private bool _isAnimatingSideBar = false;
         private bool _sidebarOpen = false;
-        private static string history;
-        private bool playSpeech = true; // Variável para controlar se o áudio deve ser reproduzido
+        private static string history = "";
+        private bool playSpeech = true;
         private bool isFirstMessageSent = false;
         private OpenAIAudioService? _openAIAudioService;
-
+        private int usuarioId = User.UserSessionId;
         public AidaViewModel AidaModel { get; set; }
 
         // Instância do DBLogic usando a string de conexão centralizada
         private DBLogic dbLogic = new DBLogic();
 
-        // Id do usuário - ajuste para pegar do login/autenticação real
-        private int usuarioId = 1; // exemplo fixo para teste
-
         public MainWindow()
         {
             InitializeComponent();
+
             UserInputBox.Focus();
             Keyboard.Focus(UserInputBox);
+
             AidaModel = new AidaViewModel();
             AidaModel.AlternarModoCommand.Execute(null);
             DataContext = AidaModel;
+
             ButtonMenu.MenuClicked += OnMenuButtonClick;
 
             // Defina a imagem inicial do botão conforme playSpeech
@@ -58,7 +56,7 @@ namespace RightHelp___Aida.Views
         {
             // Obtém a personalidade selecionada
             var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona);
-            history = dbLogic.MontarContexto(usuarioId, systemPrompt, 20);
+            history = dbLogic.MontarContexto(User.UserSessionId, systemPrompt, 20);
         }
 
         private void OnMenuButtonClick(object sender, EventArgs e)

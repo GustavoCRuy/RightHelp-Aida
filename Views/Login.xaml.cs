@@ -23,9 +23,10 @@ namespace RightHelp___Aida.Views
             if (autenticado)
             {
                 var mainWindow = new MainWindow();
-                mainWindow.Show();
+                // mainWindow.Show();
 
-                Window.GetWindow(this)?.Close();
+                // Window.GetWindow(this)?.Close();
+                NavigationService?.Navigate(mainWindow);
             }
             else
             {
