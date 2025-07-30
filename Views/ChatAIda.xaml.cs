@@ -180,8 +180,18 @@ namespace RightHelp___Aida.Views
             // Prefixo da IA em azul claro
             RespostaControl.AppendParagraph("\nAI.da\n", Brushes.LightBlue);
 
+            DateTime utcNow = DateTime.UtcNow;
+            TimeZoneInfo brasiliaZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            DateTime brasiliaTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, brasiliaZone);
+            string timeFormated = brasiliaTime.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string context01 = $"\nData e hora atuais: {timeFormated} (UTC).\n" +
+                            "Não utilize caixas de código Markdown (não inclua blocos iniciados e finalizados por três crases ```) em sua resposta.\n" +
+                            "Se precisar mostrar exemplos, comandos ou trechos de código, escreva-os como texto puro, sem formatação de caixa de código.\n";
+
             // Obtém a personalidade atual para o contexto
             var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona); // Só o texto da personalidade
+            systemPrompt += context01;
             var chatHistory = dbLogic.MontarContexto(usuarioId, systemPrompt, 20); // Contexto completo (system + histórico)
 
             await chat.StreamResponseAsync(

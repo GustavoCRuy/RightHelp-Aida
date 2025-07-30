@@ -78,25 +78,33 @@ namespace RightHelp___Aida.Services.DataBaseLogic
         public List<(string Pergunta, string Resposta)> BuscarHistorico(int usuario_id, int limite = 20)
         {
             var historico = new List<(string, string)>();
-            using (var conn = new MySqlConnection(_connectionString))
+            try
             {
-                conn.Open();
-                using (var cmd = new MySqlCommand(
-                    "SELECT Pergunta, Resposta FROM historico_conversa WHERE usuario_id = @usuario_id ORDER BY Timestamp DESC LIMIT @limite", conn))
+                using (var conn = new MySqlConnection(_connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@usuario_id", usuario_id);
-                    cmd.Parameters.AddWithValue("@limite", limite);
-
-                    using (var reader = cmd.ExecuteReader())
+                    conn.Open();
+                    using (var cmd = new MySqlCommand(
+                        "SELECT Pergunta, Resposta FROM historico_conversa WHERE usuario_id = @usuario_id ORDER BY Timestamp DESC LIMIT @limite", conn))
                     {
-                        while (reader.Read())
+                        cmd.Parameters.AddWithValue("@usuario_id", usuario_id);
+                        cmd.Parameters.AddWithValue("@limite", limite);
+
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            string pergunta = reader.GetString("Pergunta");
-                            string resposta = reader.GetString("Resposta");
-                            historico.Add((pergunta, resposta));
+                            while (reader.Read())
+                            {
+                                string pergunta = reader.GetString("Pergunta");
+                                string resposta = reader.GetString("Resposta");
+                                historico.Add((pergunta, resposta));
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Log do erro (pode ser substituído por log em arquivo, banco, etc.)
+                MessageBox.Show($"Erro ao buscar histórico: {ex.Message}");
             }
             return historico;
         }
