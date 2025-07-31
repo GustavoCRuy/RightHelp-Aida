@@ -10,6 +10,7 @@ using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 using RightHelp___Aida.Services.DataBaseLogic;
 using RightHelp___Aida.Services;
+using static RightHelp___Aida.Services.AiCore.AidaVoice;
 
 namespace RightHelp___Aida.Views
 {
@@ -55,7 +56,7 @@ namespace RightHelp___Aida.Views
         private void CarregarHistoricoDoBanco()
         {
             // Obtém a personalidade selecionada
-            var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona);
+            var systemPrompt = AidaPersonalities.PersonalityManager.GetContext(AidaState.CurrentPersona);
             history = dbLogic.MontarContexto(User.UserSessionId, systemPrompt, 20);
         }
 
@@ -190,7 +191,7 @@ namespace RightHelp___Aida.Views
                             "Se precisar mostrar exemplos, comandos ou trechos de código, escreva-os como texto puro, sem formatação de caixa de código.\n";
 
             // Obtém a personalidade atual para o contexto
-            var systemPrompt = AidaPersonalityManager.GetContext(AidaState.CurrentPersona); // Só o texto da personalidade
+            var systemPrompt = AidaPersonalities.PersonalityManager.GetContext(AidaState.CurrentPersona); // Só o texto da personalidade
             systemPrompt += context01;
             var chatHistory = dbLogic.MontarContexto(usuarioId, systemPrompt, 20); // Contexto completo (system + histórico)
 
@@ -219,7 +220,7 @@ namespace RightHelp___Aida.Views
                     {
                         Dispatcher.Invoke(() => VoiceCircleControl.ReactToVolume(volume));
                     };
-                    await _openAIAudioService.PlaySpeechAsync(respostaCompleta, AidaPersonalities.AidaVoiceManager.GetVoiceName(AidaState.CurrentVoice));
+                    await _openAIAudioService.PlaySpeechAsync(respostaCompleta, AidaVoice.VoiceManager.GetVoiceName(AidaState.CurrentVoice));
 
                     _openAIAudioService.Equals(null);
                 }
@@ -274,8 +275,8 @@ namespace RightHelp___Aida.Views
             if (PersonaComboBox.SelectedItem is AidaPersonalities.AidaPersona selected)
             {
                 AidaState.CurrentPersona = selected;
-                var color = AidaPersonalities.GetPersonaColor(selected);
-                var shadowColor = AidaPersonalities.GetPersonaShadowColor(selected);
+                var color = AidaPersonalities.Colors.GetPersonaColor(selected);
+                var shadowColor = AidaPersonalities.Colors.GetPersonaShadowColor(selected);
                 VoiceCircleControl.SetPersonaColor(color);
                 VoiceCircleControl.SetPersonaShadow(shadowColor);
 
@@ -286,7 +287,7 @@ namespace RightHelp___Aida.Views
 
         private void VoiceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VoiceComboBox.SelectedItem is AidaPersonalities.AidaVoice selected)
+            if (VoiceComboBox.SelectedItem is AidaVoiceName selected)
             {
                 AidaState.CurrentVoice = selected;
             }
@@ -297,7 +298,7 @@ namespace RightHelp___Aida.Views
             PersonaComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaPersona));
             PersonaComboBox.SelectedItem = AidaState.CurrentPersona;
 
-            VoiceComboBox.ItemsSource = Enum.GetValues(typeof(AidaPersonalities.AidaVoice));
+            VoiceComboBox.ItemsSource = Enum.GetValues(typeof(AidaVoice.AidaVoiceName));
             VoiceComboBox.SelectedItem = AidaState.CurrentVoice;
         }
 

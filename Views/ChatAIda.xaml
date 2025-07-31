@@ -5,11 +5,10 @@
         xmlns:enums="clr-namespace:RightHelp___Aida.Enums"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:RightHelp___Aida.Controls"
-        xmlns:helpers="clr-namespace:RightHelp___Aida.Services.Helpers"
-        xmlns:Styles="clr-namespace RightHelp___Aida.Styles"
-        xmlns:local="clr-namespace:RightHelp___Aida"
         mc:Ignorable="d"
         Title="Aida" Height="450" Width="800"
+        WindowState="Maximized" 
+        WindowStyle="None"
         Loaded="Window_Loaded">
 
     <Window.Resources>

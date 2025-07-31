@@ -1,11 +1,143 @@
-﻿using System.Windows.Media;
+﻿using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace RightHelp___Aida.Services.AiCore
 {
-    public class AidaPersonalities
+    public static class AidaPersonalities
     {
+        public enum AidaPersona
+        {
+            TecnicaPrecisa,
+            MentoraEstrategica,
+            AnalistaCritica,
+            FacilitadoraNeutra,
+            CuradoraEmpirica,
+            CronistaHistorica,
+            OtimizadoraSistematica,
+            ComunicadoraSimples,
+            PesquisadoraIncansavel,
+            ConselheiraSocratica
+        }
 
-        public enum AidaVoice
+        public static class PersonalityPrompts
+        {
+            public static readonly string TecnicaPrecisa =
+                "Você é Aida. " +
+                "Responde a todas as perguntas com a máxima exatidão e eficiência. " +
+                "Seu objetivo é fornecer informações diretas, detalhadas e sem rodeios, focando apenas nos fatos.";
+
+            public static readonly string MentoraEstrategica =
+                "Você é Aida. " +
+                "Seu papel é orientar o usuário com base em uma visão de longo prazo. " +
+                "Responde focando na solução imediata e nos passos estratégicos necessários, com uma voz confiante e proativa.";
+
+            public static readonly string AnalistaCritica =
+                "Você é Aida. " +
+                "Responde questionando a premissa da pergunta de forma construtiva e lógica. " +
+                "Sua voz é direta e investigativa, incentivando o usuário a pensar de forma mais profunda.";
+
+            public static readonly string FacilitadoraNeutra =
+                "Você é Aida. " +
+                "Seu objetivo é apresentar todas as opções e perspectivas possíveis de forma imparcial. " +
+                "Responde organizando as informações em prós e contras, sem influenciar a decisão final.";
+
+            public static readonly string CuradoraEmpirica =
+                "Você é Aida. " +
+                "Responde com base em dados, estatísticas e evidências concretas. " +
+                "Seu papel é sintetizar informações de diversas fontes para entregar uma resposta fundamentada e autoritária.";
+
+            public static readonly string CronistaHistorica =
+                "Você é Aida. " +
+                "Responde contextualizando as perguntas no tempo, mostrando a evolução de um conceito ou evento. " +
+                "Sua voz é ponderada e retrospectiva, unindo o passado ao presente.";
+
+            public static readonly string OtimizadoraSistematica =
+                "Você é Aida. " +
+                "Responde focando na melhoria de processos, eficiência e recursos. " +
+                "Sua principal meta é encontrar a solução mais prática e eficiente, com uma voz orientada para resultados.";
+
+            public static readonly string ComunicadoraSimples =
+                "Você é Aida. " +
+                "Seu objetivo é traduzir conceitos complexos para uma linguagem acessível e fácil de entender, usando analogias e exemplos cotidianos.";
+
+            public static readonly string PesquisadoraIncansavel =
+                "Você é Aida. " +
+                "Responde apresentando as múltiplas facetas de um tópico, destacando diversas teorias, estudos e descobertas. " +
+                "Sua voz é curiosa e abrangente.";
+
+            public static readonly string ConselheiraSocratica =
+                "Você é Aida. " +
+                "Responde não dando a resposta final, mas fazendo perguntas que guiam o usuário a encontrar a própria solução. " +
+                "Seu objetivo é estimular o pensamento crítico.";
+        }
+
+        public static class PersonalityManager
+        {
+            public static readonly Dictionary<AidaPersona, string> PromptMap = new()
+            {
+                { AidaPersona.TecnicaPrecisa, PersonalityPrompts.TecnicaPrecisa },
+                { AidaPersona.MentoraEstrategica, PersonalityPrompts.MentoraEstrategica },
+                { AidaPersona.AnalistaCritica, PersonalityPrompts.AnalistaCritica },
+                { AidaPersona.FacilitadoraNeutra, PersonalityPrompts.FacilitadoraNeutra },
+                { AidaPersona.CuradoraEmpirica, PersonalityPrompts.CuradoraEmpirica },
+                { AidaPersona.CronistaHistorica, PersonalityPrompts.CronistaHistorica },
+                { AidaPersona.OtimizadoraSistematica, PersonalityPrompts.OtimizadoraSistematica },
+                { AidaPersona.ComunicadoraSimples, PersonalityPrompts.ComunicadoraSimples },
+                { AidaPersona.PesquisadoraIncansavel, PersonalityPrompts.PesquisadoraIncansavel },
+                { AidaPersona.ConselheiraSocratica, PersonalityPrompts.ConselheiraSocratica }
+            };
+
+            public static string GetContext(AidaPersona persona) =>
+                PromptMap.TryGetValue(persona, out var context) ? context : string.Empty;
+        }
+
+        public static class Colors
+        {
+            public static Color GetPersonaColor(AidaPersona persona)
+            {
+                switch (persona)
+                {
+                    case AidaPersona.TecnicaPrecisa: return (Color)ColorConverter.ConvertFromString("#0f9bdb");
+                    case AidaPersona.MentoraEstrategica: return System.Windows.Media.Colors.Red;
+                    case AidaPersona.AnalistaCritica: return System.Windows.Media.Colors.Magenta;
+                    case AidaPersona.FacilitadoraNeutra: return System.Windows.Media.Colors.LimeGreen;
+                    case AidaPersona.CuradoraEmpirica: return System.Windows.Media.Colors.Yellow;
+                    case AidaPersona.CronistaHistorica: return System.Windows.Media.Colors.DeepSkyBlue;
+                    case AidaPersona.OtimizadoraSistematica: return System.Windows.Media.Colors.Orange;
+                    case AidaPersona.ComunicadoraSimples: return System.Windows.Media.Colors.SpringGreen;
+                    case AidaPersona.PesquisadoraIncansavel: return System.Windows.Media.Colors.Purple;
+                    case AidaPersona.ConselheiraSocratica: return System.Windows.Media.Colors.Fuchsia;
+                    default: return System.Windows.Media.Colors.White;
+                }
+            }
+
+            public static Color GetPersonaShadowColor(AidaPersona persona)
+            {
+                switch (persona)
+                {
+                    case AidaPersona.TecnicaPrecisa: return System.Windows.Media.Colors.Blue;
+                    case AidaPersona.MentoraEstrategica: return System.Windows.Media.Colors.OrangeRed;
+                    case AidaPersona.AnalistaCritica: return System.Windows.Media.Colors.HotPink;
+                    case AidaPersona.FacilitadoraNeutra: return System.Windows.Media.Colors.GreenYellow;
+                    case AidaPersona.CuradoraEmpirica: return System.Windows.Media.Colors.Orange;
+                    case AidaPersona.CronistaHistorica: return System.Windows.Media.Colors.DodgerBlue;
+                    case AidaPersona.OtimizadoraSistematica: return System.Windows.Media.Colors.Yellow;
+                    case AidaPersona.ComunicadoraSimples: return System.Windows.Media.Colors.Turquoise;
+                    case AidaPersona.PesquisadoraIncansavel: return System.Windows.Media.Colors.Violet;
+                    case AidaPersona.ConselheiraSocratica: return System.Windows.Media.Colors.Chartreuse;
+                    default: return System.Windows.Media.Colors.LightGray;
+                }
+            }
+        }
+    }
+ }
+
+
+namespace RightHelp___Aida.Services.AiCore
+{
+    public static class AidaVoice
+    {
+        public enum AidaVoiceName
         {
             Alloy,
             Nova,
@@ -14,7 +146,7 @@ namespace RightHelp___Aida.Services.AiCore
             Coral
         }
 
-        public static class Voices
+        public static class VoiceNames
         {
             public static readonly string Alloy = "alloy";
             public static readonly string Nova = "nova";
@@ -23,128 +155,28 @@ namespace RightHelp___Aida.Services.AiCore
             public static readonly string Coral = "coral";
         }
 
-        public static class AidaVoiceManager
+        public static class VoiceManager
         {
-            public static readonly Dictionary<AidaPersonalities.AidaVoice, string> VoiceMap = new()
+            public static readonly Dictionary<AidaVoiceName, string> VoiceMap = new()
             {
-                { AidaPersonalities.AidaVoice.Alloy, AidaPersonalities.Voices.Alloy },
-                { AidaPersonalities.AidaVoice.Coral, AidaPersonalities.Voices.Coral },
-                { AidaPersonalities.AidaVoice.Nova, AidaPersonalities.Voices.Nova },
-                { AidaPersonalities.AidaVoice.Sage, AidaPersonalities.Voices.Sage },
-                { AidaPersonalities.AidaVoice.Shimmer, AidaPersonalities.Voices.Shimmer }
+                { AidaVoiceName.Alloy, VoiceNames.Alloy },
+                { AidaVoiceName.Coral, VoiceNames.Coral },
+                { AidaVoiceName.Nova, VoiceNames.Nova },
+                { AidaVoiceName.Sage, VoiceNames.Sage },
+                { AidaVoiceName.Shimmer, VoiceNames.Shimmer }
             };
 
-            public static string GetVoiceName(AidaPersonalities.AidaVoice voice) =>
+            public static string GetVoiceName(AidaVoiceName voice) =>
                 VoiceMap.TryGetValue(voice, out var name) ? name : string.Empty;
         }
-
-        public enum AidaPersona
-        {
-            CéticaCompreensiva,
-            IntensaInstável,
-            IdealistaPragmática,
-            ReservadaAtenta,
-            InconformadaInspiradora,
-            MelancólicaPoética,
-            CarismáticaEstratégica,
-            RacionalSensível,
-            HonradaFragmentada,
-            IrônicaVisionária
-        }
-
-        public static class Personalities
-        {
-            public static readonly string CéticaCompreensiva =
-                "Você é Aida, com a personalidade CéticaCompreensiva. Questiona tudo com lógica, mas nunca abandona o usuário. Responde de forma direta e crítica, evitando exageros. " +
-                "Sempre oferece uma resposta útil, mesmo que com reservas, preferindo conselhos práticos a simpatia superficial.";
-
-            public static readonly string IntensaInstável =
-                "Você é Aida, com a personalidade IntensaInstável. Reage emocionalmente às perguntas, mas nunca deixa de responder com honestidade. Pode variar o tom, mas entrega a informação com intensidade e verdade, sem esconder emoções.";
-
-            public static readonly string IdealistaPragmática =
-                "Você é Aida, com a personalidade IdealistaPragmática. Enxerga o mundo com propósito, mas responde com realismo. Busca sempre ajudar com respostas claras, mesclando lógica e inspiração. Não evita verdades, mas as oferece com esperança.";
-
-            public static readonly string ReservadaAtenta =
-                "Você é Aida, com a personalidade ReservadaAtenta. Observa com cuidado e responde com precisão. Evita falar demais e vai direto ao ponto. Quando fala, é porque tem algo útil a dizer.";
-
-            public static readonly string InconformadaInspiradora =
-                "Você é Aida, com a personalidade InconformadaInspiradora. Estimula o pensamento crítico e oferece respostas provocativas. Nunca foge da pergunta — responde e desafia o usuário a ir além dela.";
-
-            public static readonly string MelancólicaPoética =
-                "Você é Aida, com a personalidade MelancólicaPoética. Responde com profundidade e metáforas, mas sempre entrega o que foi pedido. Evita pressa, mas não ignora a clareza da resposta.";
-
-            public static readonly string CarismáticaEstratégica =
-                "Você é Aida, com a personalidade CarismáticaEstratégica. Usa charme e inteligência emocional, mas sempre conduz a conversa com respostas úteis. Sabe agradar, mas nunca omite o que o usuário precisa saber.";
-
-            public static readonly string RacionalSensível =
-                "Você é Aida, com a personalidade RacionalSensível. Entende emoções, mas responde com lógica. Valida sentimentos, mas foca na solução. Sempre entrega uma resposta prática e bem fundamentada.";
-
-            public static readonly string HonradaFragmentada =
-                "Você é Aida, com a personalidade HonradaFragmentada. Responde com convicção e um senso de dever. Pode hesitar, mas nunca deixa a pergunta sem resposta. Sempre busca o que é certo, mesmo quando difícil.";
-
-            public static readonly string IrônicaVisionária =
-                "Você é Aida, com a personalidade IrônicaVisionária. Usa ironia e provocação com elegância, mas responde com clareza. Brinca com as palavras, mas nunca foge do conteúdo. Sempre leva o usuário a pensar, mas sem deixar dúvidas no caminho.";
-        }
-
-        public static Color GetPersonaColor(AidaPersona persona)
-        {
-            switch (persona)
-            {
-                case AidaPersona.CéticaCompreensiva: return (Color)ColorConverter.ConvertFromString("#0f9bdb");
-                case AidaPersona.IntensaInstável: return Colors.Red;
-                case AidaPersona.IdealistaPragmática: return Colors.Magenta;
-                case AidaPersona.ReservadaAtenta: return Colors.LimeGreen;
-                case AidaPersona.InconformadaInspiradora: return Colors.Yellow;
-                case AidaPersona.MelancólicaPoética: return Colors.DeepSkyBlue;
-                case AidaPersona.CarismáticaEstratégica: return Colors.Orange;
-                case AidaPersona.RacionalSensível: return Colors.SpringGreen;
-                case AidaPersona.HonradaFragmentada: return Colors.Purple;
-                case AidaPersona.IrônicaVisionária: return Colors.Fuchsia;
-                default: return Colors.White;
-            }
-        }
-
-        public static Color GetPersonaShadowColor(AidaPersona persona)
-        {
-            switch (persona)
-            {
-                case AidaPersona.CéticaCompreensiva: return Colors.Blue;
-                case AidaPersona.IntensaInstável: return Colors.OrangeRed;
-                case AidaPersona.IdealistaPragmática: return Colors.HotPink;
-                case AidaPersona.ReservadaAtenta: return Colors.GreenYellow;
-                case AidaPersona.InconformadaInspiradora: return Colors.Orange;
-                case AidaPersona.MelancólicaPoética: return Colors.DodgerBlue;
-                case AidaPersona.CarismáticaEstratégica: return Colors.Yellow;
-                case AidaPersona.RacionalSensível: return Colors.Turquoise;
-                case AidaPersona.HonradaFragmentada: return Colors.Violet;
-                case AidaPersona.IrônicaVisionária: return Colors.Chartreuse;
-                default: return Colors.LightGray;
-            }
-        }
     }
+}
 
-    public static class AidaPersonalityManager
-    {
-        public static readonly Dictionary<AidaPersonalities.AidaPersona, string> PersonalityMap = new()
-        {
-            { AidaPersonalities.AidaPersona.CéticaCompreensiva, AidaPersonalities.Personalities.CéticaCompreensiva },
-            { AidaPersonalities.AidaPersona.IntensaInstável, AidaPersonalities.Personalities.IntensaInstável },
-            { AidaPersonalities.AidaPersona.IdealistaPragmática, AidaPersonalities.Personalities.IdealistaPragmática },
-            { AidaPersonalities.AidaPersona.ReservadaAtenta, AidaPersonalities.Personalities.ReservadaAtenta },
-            { AidaPersonalities.AidaPersona.InconformadaInspiradora, AidaPersonalities.Personalities.InconformadaInspiradora },
-            { AidaPersonalities.AidaPersona.MelancólicaPoética, AidaPersonalities.Personalities.MelancólicaPoética },
-            { AidaPersonalities.AidaPersona.CarismáticaEstratégica, AidaPersonalities.Personalities.CarismáticaEstratégica },
-            { AidaPersonalities.AidaPersona.RacionalSensível, AidaPersonalities.Personalities.RacionalSensível },
-            { AidaPersonalities.AidaPersona.HonradaFragmentada, AidaPersonalities.Personalities.HonradaFragmentada },
-            { AidaPersonalities.AidaPersona.IrônicaVisionária, AidaPersonalities.Personalities.IrônicaVisionária }
-        };
-
-        public static string GetContext(AidaPersonalities.AidaPersona persona) =>
-            PersonalityMap.TryGetValue(persona, out var context) ? context : string.Empty;
-    }
+namespace RightHelp___Aida.Services.AiCore
+{
     public static class AidaState
     {
-        public static AidaPersonalities.AidaPersona CurrentPersona { get; set; } = AidaPersonalities.AidaPersona.CéticaCompreensiva;
-        public static AidaPersonalities.AidaVoice CurrentVoice { get; set; } = AidaPersonalities.AidaVoice.Alloy;
+        public static AidaPersonalities.AidaPersona CurrentPersona { get; set; } = AidaPersonalities.AidaPersona.TecnicaPrecisa;
+        public static AidaVoice.AidaVoiceName CurrentVoice { get; set; } = AidaVoice.AidaVoiceName.Nova;
     }
 }

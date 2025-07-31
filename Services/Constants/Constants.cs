@@ -10,7 +10,7 @@ namespace RightHelp___Aida.Services.Constants
 {
     internal class Const
     {
-        public static string openAIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        public static string openAIKey = "";
         public static readonly string connectionString = "server=localhost;user=root;password=;database=righthelp";
     }
 }
