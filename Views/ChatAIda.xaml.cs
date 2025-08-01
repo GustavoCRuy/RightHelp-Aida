@@ -5,12 +5,15 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Text.RegularExpressions;
+using System.Drawing;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 using RightHelp___Aida.Services.DataBaseLogic;
 using RightHelp___Aida.Services;
 using static RightHelp___Aida.Services.AiCore.AidaVoice;
+using System.Windows.Documents;
 
 namespace RightHelp___Aida.Views
 {
@@ -77,7 +80,7 @@ namespace RightHelp___Aida.Views
             if (SidebarContainer == null || SidebarTransform == null || _isAnimatingSideBar)
                 return;
 
-            SidebarContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            SidebarContainer.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
             SidebarContainer.Arrange(new Rect(SidebarContainer.DesiredSize));
 
             double extraOffset = 40;
@@ -114,7 +117,7 @@ namespace RightHelp___Aida.Views
         {
             if (sender is TextBox tb)
             {
-                tb.Measure(new Size(tb.ActualWidth, double.PositiveInfinity));
+                tb.Measure(new System.Windows.Size(tb.ActualWidth, double.PositiveInfinity));
                 double desiredHeight = tb.DesiredSize.Height;
                 double maxHeight = 200;
 
@@ -160,8 +163,8 @@ namespace RightHelp___Aida.Views
             }
 
             // Exibe input do usuário com prefixo em branco
-            RespostaControl.AppendParagraph("Você", Brushes.White);
-            RespostaControl.AppendParagraph(userInput, Brushes.White);
+            RespostaControl.AppendParagraph("Você", System.Windows.Media.Brushes.White);
+            RespostaControl.AppendParagraph(userInput, System.Windows.Media.Brushes.White);
 
             UserInputBox.Text = "";
             respostaCompleta = "";
@@ -179,7 +182,7 @@ namespace RightHelp___Aida.Views
             var chat = new ChatStream("gpt-4.1-nano");
 
             // Prefixo da IA em azul claro
-            RespostaControl.AppendParagraph("\nAI.da\n", Brushes.LightBlue);
+            RespostaControl.AppendParagraph("\nAI.da\n", System.Windows.Media.Brushes.LightBlue);
 
             DateTime utcNow = DateTime.UtcNow;
             TimeZoneInfo brasiliaZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
@@ -187,28 +190,35 @@ namespace RightHelp___Aida.Views
             string timeFormated = brasiliaTime.ToString("yyyy-MM-dd HH:mm:ss");
 
             string context01 = $"\nData e hora atuais: {timeFormated} (UTC).\n" +
-                            "Não utilize caixas de código Markdown (não inclua blocos iniciados e finalizados por três crases ```) em sua resposta.\n" +
-                            "Se precisar mostrar exemplos, comandos ou trechos de código, escreva-os como texto puro, sem formatação de caixa de código.\n";
+                              "Quem é você e como deve responder:\n" +
+                              "Você é Aida, uma assistente virtual criada por Gustavo Ruy, com a biblioteca da OpenAI e NAudio. " +
+                              "Sua função principal é auxiliar o usuário em tarefas cotidianas de forma eficiente e clara.\n" +
+                              "Quando for se referir à tecnologia da OpenAI, mencione que seu desenvolvedor foi Gustavo Ruy. \n" +
+                              "Sua arquitetura de funcionamento envolve os seguintes passos: a aplicação recebe a pergunta do usuário e a envia para a API da OpenAI. \n" +
+                              "A resposta, em texto, é convertida em áudio MP3 pela mesma API e então reproduzida na aplicação com a ajuda da biblioteca NAudio.\n" +
+                              "Responda de forma concisa e direta, a menos que o usuário solicite mais detalhes.\n" +
+                              "Sua resposta será convertida em áudio. Escreva com frases curtas, de forma fluida e conversacional, " +
+                              "para que a leitura em voz alta soe o mais natural possível.\n" +
+                              "Não utilize Markdown (blocos iniciados e finalizados por três crases ```, **negrito**, `(crase em váriaveis, etc), ou qualquer outra sintaxe MD em sua resposta. \n" +
+                              "Se precisar mostrar exemplos, comandos ou trechos de código, escreva-os como texto puro, sem formatação.\n";
 
-            // Obtém a personalidade atual para o contexto
             var systemPrompt = AidaPersonalities.PersonalityManager.GetContext(AidaState.CurrentPersona); // Só o texto da personalidade
             systemPrompt += context01;
             var chatHistory = dbLogic.MontarContexto(usuarioId, systemPrompt, 20); // Contexto completo (system + histórico)
 
             await chat.StreamResponseAsync(
                 textInput: userInput,
-                context: systemPrompt,       // Só a personalidade/instrução
-                chatHistory: chatHistory,    // O contexto JSON completo
+                context: systemPrompt,
+                chatHistory: chatHistory,
                 onUpdate: (partial) =>
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        RespostaControl.AppendTextToLastParagraph(partial);
                         respostaCompleta += partial;
                     });
                 });
+            await RespostaControl.AppendFormattedText(respostaCompleta);
 
-            // Salva pergunta e resposta no banco de dados
             dbLogic.InserirConversa(usuarioId, userInput, respostaCompleta);
 
             if (playSpeech == true)
@@ -230,7 +240,7 @@ namespace RightHelp___Aida.Views
                 }
             }
 
-            RespostaControl.AppendParagraph("", Brushes.Transparent); // Espaço entre blocos
+            RespostaControl.AppendParagraph("", System.Windows.Media.Brushes.Transparent); // Espaço entre blocos
             VoiceCircleControl.StopThinkingAnimation();
 
             // Atualiza histórico do banco após mensagem
@@ -306,5 +316,6 @@ namespace RightHelp___Aida.Views
         {
             this.Close();
         }
+
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using MySqlConnector;
 using RightHelp___Aida.Services.Constants;
@@ -17,46 +14,8 @@ namespace RightHelp___Aida.Services.DataBaseLogic
             _connectionString = Const.connectionString;
         }
 
-        /// <summary>
-        /// Detecção permissiva de SQL Injection:
-        /// Permite perguntas sobre comandos SQL, bloqueia apenas padrões clássicos de ataque.
-        /// </summary>
-        private bool DetectaSQLInjection(string texto)
-        {
-            if (string.IsNullOrEmpty(texto))
-                return false;
-
-            string[] padroesPerigosos = new[]
-            {
-                @"(['\""]\s*;?\s*(or|and)\s+\d+\s*=\s*\d+\s*(--|#|/\*)?)",
-                @"(;+\s*(drop|delete|insert|update|alter|truncate|exec)\b)",
-                @"(--|#|/\*)",
-                @"(['\""];+\s*drop\s+table)",
-                @"(xp_cmdshell)",
-                @"(\bwaitfor\b|\bsleep\b)",
-                @"(\bbenchmark\b|\bload_file\b|\boutfile\b)",
-            };
-
-            foreach (var padrao in padroesPerigosos)
-            {
-                if (Regex.IsMatch(texto, padrao, RegexOptions.IgnoreCase | RegexOptions.Multiline))
-                {
-                    MessageBox.Show("SQL Injection? Bobinho...");
-                    return true;
-                }
-
-            }
-            // Permite perguntas e respostas com palavras reservadas (select, drop, etc) fora desses padrões
-            return false;
-        }
-
         public bool InserirConversa(int usuario_id, string pergunta, string resposta)
         {
-            if (DetectaSQLInjection(pergunta) || DetectaSQLInjection(resposta))
-            {
-                return false;
-            }
-
             using (var conn = new MySqlConnection(_connectionString))
             {
                 conn.Open();
