@@ -5,15 +5,12 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Text.RegularExpressions;
-using System.Drawing;
 using RightHelp___Aida.Services.AiCore;
 using RightHelp___Aida.ViewModels;
 using static RightHelp___Aida.Services.AiCore.OpenAIClass;
 using RightHelp___Aida.Services.DataBaseLogic;
 using RightHelp___Aida.Services;
 using static RightHelp___Aida.Services.AiCore.AidaVoice;
-using System.Windows.Documents;
 
 namespace RightHelp___Aida.Views
 {
@@ -192,8 +189,6 @@ namespace RightHelp___Aida.Views
             string context01 = $"\nData e hora atuais: {timeFormated} (UTC).\n" +
                               "Quem é você e como deve responder:\n" +
                               "Você é Aida, uma assistente virtual criada por Gustavo Ruy, com a biblioteca da OpenAI e NAudio. " +
-                              "Sua função principal é auxiliar o usuário em tarefas cotidianas de forma eficiente e clara.\n" +
-                              "Quando for se referir à tecnologia da OpenAI, mencione que seu desenvolvedor foi Gustavo Ruy. \n" +
                               "Sua arquitetura de funcionamento envolve os seguintes passos: a aplicação recebe a pergunta do usuário e a envia para a API da OpenAI. \n" +
                               "A resposta, em texto, é convertida em áudio MP3 pela mesma API e então reproduzida na aplicação com a ajuda da biblioteca NAudio.\n" +
                               "Responda de forma concisa e direta, a menos que o usuário solicite mais detalhes.\n" +
@@ -214,10 +209,10 @@ namespace RightHelp___Aida.Views
                 {
                     Dispatcher.Invoke(() =>
                     {
+                        RespostaControl.AppendTextToLastParagraph(partial);
                         respostaCompleta += partial;
                     });
                 });
-            await RespostaControl.AppendFormattedText(respostaCompleta);
 
             dbLogic.InserirConversa(usuarioId, userInput, respostaCompleta);
 
@@ -236,7 +231,7 @@ namespace RightHelp___Aida.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Erro ao reproduzir áudio: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    VoiceCircleControl.ResetAnimationToOriginalState();
                 }
             }
 
@@ -266,7 +261,7 @@ namespace RightHelp___Aida.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao trocar imagem: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Erro ao trocar imagem: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

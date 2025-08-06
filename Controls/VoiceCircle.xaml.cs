@@ -199,6 +199,20 @@ namespace RightHelp___Aida.Controls
             }
         }
 
+        public void ResetAnimationToOriginalState()
+        {
+            VoiceCircleScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+            VoiceCircleScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+
+            PositionDotAtCenter();
+
+            VoiceCircleScale.ScaleX = 1;
+            VoiceCircleScale.ScaleY = 1;
+            isAnimating = false;
+
+            PositionInnerGuideEllipse();
+        }
+
         public void SetPersonaColor(Color color)
         {
             VoiceEllipse.Fill = new SolidColorBrush(color);

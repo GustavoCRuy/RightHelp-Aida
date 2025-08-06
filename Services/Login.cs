@@ -1,11 +1,5 @@
 ﻿using MySqlConnector;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using RightHelp___Aida.Services.Constants;
-using System.Collections.Generic;
-using System.Windows;
 
 namespace RightHelp___Aida.Services
 {

@@ -10,7 +10,7 @@ namespace RightHelp___Aida.Services.Constants
 {
     internal class Const
     {
-        public static string openAIKey = "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";
+        public static string openAIKey = "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";
         public static readonly string connectionString = "server=localhost;user=root;password=;database=righthelp";
     }
 }
